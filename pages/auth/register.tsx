@@ -28,6 +28,7 @@ import { fetchPostJSON } from '../../utils/apiHelpers';
 import { IAddress, ICustomer } from '../../interfaces';
 import validator from 'validator';
 import { ChangeEvent, useState } from 'react';
+import { NextPage } from 'next';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -88,14 +89,15 @@ const schema = yup.object().shape({
     }),
 });
 
-const RegisterPage = () => {
+const RegisterPage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [expanded, setExpanded] = useState<string | false>('panel1');
 
-    const handleChange = (panel: string) => (event: ChangeEvent<{}>, newExpanded: boolean) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleChange = (panel: string) => (_event: ChangeEvent<any>, newExpanded: boolean) => {
         setExpanded(newExpanded ? panel : false);
     };
 

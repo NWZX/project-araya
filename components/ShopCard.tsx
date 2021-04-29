@@ -9,7 +9,6 @@ import {
     CardActions,
     createStyles,
     makeStyles,
-    Theme,
 } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import NearMeIcon from '@material-ui/icons/NearMe';
@@ -17,9 +16,9 @@ import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
-import { EServiceType, IStore } from '../interfaces';
+import { IStore } from '../interfaces';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             maxWidth: '100%',
@@ -42,7 +41,7 @@ interface Props {
     onClick?: () => void;
 }
 
-const ShopCard = ({ store, onClick }: Props) => {
+const ShopCard = ({ store, onClick }: Props): JSX.Element => {
     const classes = useStyles();
     const isDelivery = store.serviceType.isDelivery;
     const isTakeAway = store.serviceType.isTakeAway;
@@ -67,11 +66,7 @@ const ShopCard = ({ store, onClick }: Props) => {
                     </Typography>
                     <Grid container spacing={1}>
                         <Grid item>
-                            <Chip
-                                icon={<QueryBuilderIcon />}
-                                label={true ? 'Ouvert' : 'Fermer'}
-                                color={true ? 'primary' : 'secondary'}
-                            />
+                            <Chip icon={<QueryBuilderIcon />} label={'Ouvert'} color={'primary'} />
                         </Grid>
                         <Grid item>
                             <Chip icon={<NearMeIcon />} label={`Non determiné`} />

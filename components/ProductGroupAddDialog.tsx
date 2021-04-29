@@ -19,12 +19,12 @@ const ProductGroupAddDialog = ({}: Props): JSX.Element => {
     const setOpen = dialogContext.addGroup?.[1];
     const [title, setTitle] = useState('');
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setOpen && setOpen(false);
     };
-    const onSubmit = () => {
-        handleClose();
-    };
+    // const onSubmit = (): void => {
+    //     handleClose();
+    // };
 
     return (
         <form>

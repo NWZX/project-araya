@@ -20,6 +20,7 @@ import {
     TableCell,
 } from '@material-ui/core';
 import { formatCurrencyString } from 'use-shopping-cart';
+import { NextPage } from 'next';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const PayementStepPage = () => {
+const PayementStepPage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

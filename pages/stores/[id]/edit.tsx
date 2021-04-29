@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import { Grid, makeStyles, createStyles, Theme, Typography } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart';
 
 import { DialogDataContext, IProduct, IProductGroup, IStore } from '../../../interfaces';
 import firebase from 'firebase';
@@ -17,7 +16,7 @@ import ProductList from '../../../components/ProductList';
 import ProductGroupDelDialog from '../../../components/ProductGroupDelDialog';
 import ProductGroupAddDialog from '../../../components/ProductGroupAddDialog';
 import ProductAddDialog from '../../../components/ProductAddDialog';
-import { group } from 'node:console';
+import { NextPage } from 'next';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,16 +49,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const StorePage = () => {
+const StorePage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const router = useRouter();
     const { id } = router.query as { id: string };
 
-    const [data, loading, error] = useDocumentData<IStore>(firebase.firestore().doc('stores/' + id), {
+    const [data] = useDocumentData<IStore>(firebase.firestore().doc('stores/' + id), {
         idField: 'id',
         refField: 'ref',
     });
-    const [groups, loadingGroups, errorGroups] = useCollectionData<IProductGroup>(
+    const [groups] = useCollectionData<IProductGroup>(
         firebase.firestore().collection('productGroups').where('storeId', '==', id),
         {
             idField: 'id',

@@ -79,7 +79,7 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                                     <RadioGroup
                                         row
                                         value={optionState.get('radio' + i)}
-                                        onChange={(e, c) => {
+                                        onChange={(_, c) => {
                                             setOptionStateRadio(optionStateRadio.set('radio' + i, c));
                                         }}
                                     >
@@ -98,7 +98,7 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                                     </RadioGroup>
                                 ) : (
                                     <FormGroup row>
-                                        {v.option.map((w, l) => {
+                                        {v.option.map((w) => {
                                             typeof optionState.get(w.id) === 'undefined'
                                                 ? setOptionState(optionState.set(w.id, false))
                                                 : null;
@@ -109,7 +109,7 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                                                     control={
                                                         <Checkbox
                                                             checked={optionState.get(w.id)}
-                                                            onChange={(e, c) => {
+                                                            onChange={(_, c) => {
                                                                 setOptionState(optionState.set(w.id, c));
                                                             }}
                                                         />

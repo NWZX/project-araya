@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { Chip, createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import { ITag } from '../interfaces';
 

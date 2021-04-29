@@ -14,7 +14,6 @@ import {
     Checkbox,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import faker from 'faker';
 import React from 'react';
 import { ITag } from '../interfaces';
 import TagFilters from './TagFilters';
@@ -56,7 +55,7 @@ interface Props {
     onOptionChange: (delivery?: boolean, takeAway?: boolean) => void;
 }
 
-const Filters = ({ tags, onOptionChange, onTagsChange }: Props) => {
+const Filters = ({ tags, onOptionChange, onTagsChange }: Props): JSX.Element => {
     return (
         <Accordion variant="outlined" TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="panel1a-header">

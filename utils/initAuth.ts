@@ -16,6 +16,8 @@ const initAuth = (): void => {
             loginAPIEndpoint: '/api/auth/login', // required
             logoutAPIEndpoint: '/api/auth/logout', // required
             // Required in most cases.
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
             firebaseAdminInitConfig: {
                 credential: firePrivateConfig,
             },

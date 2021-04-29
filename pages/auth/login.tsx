@@ -19,6 +19,7 @@ import { useSnackbar } from 'notistack';
 
 import firebase from 'firebase/app';
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
+import { NextPage } from 'next';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,7 +54,7 @@ const schema = yup.object().shape({
         .required('Oups, somethings is missing here.'),
 });
 
-const LoginPage = () => {
+const LoginPage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

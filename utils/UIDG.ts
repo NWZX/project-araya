@@ -26,32 +26,32 @@ export class UniqueIdGenerator {
 
     // Generates chronologically orderable unique string one by one
     public static generate(): string {
-        var now = new Date().getTime();
-        var duplicateTime = now === UniqueIdGenerator.lastPushTime;
+        let now = new Date().getTime();
+        const duplicateTime = now === UniqueIdGenerator.lastPushTime;
         UniqueIdGenerator.lastPushTime = now;
 
-        var timeStampChars = new Array(8);
-        for (var i = 7; i >= 0; i--) {
+        const timeStampChars = new Array(8);
+        for (let i = 7; i >= 0; i--) {
             timeStampChars[i] = UniqueIdGenerator.PUSH_CHARS.charAt(now % 64);
             // NOTE: Can't use << here because javascript will convert to int and lose the upper bits.
             now = Math.floor(now / 64);
         }
         if (now !== 0) throw new Error('We should have converted the entire timestamp.');
 
-        var id = timeStampChars.join('');
+        let id = timeStampChars.join('');
 
         if (!duplicateTime) {
-            for (i = 0; i < 12; i++) {
+            for (let i = 0; i < 12; i++) {
                 UniqueIdGenerator.lastRandChars[i] = Math.floor(Math.random() * 64);
             }
         } else {
             // If the timestamp hasn't changed since last push, use the same random number, except incremented by 1.
-            for (i = 11; i >= 0 && UniqueIdGenerator.lastRandChars[i] === 63; i--) {
+            for (let i = 11; i >= 0 && UniqueIdGenerator.lastRandChars[i] === 63; i--) {
                 UniqueIdGenerator.lastRandChars[i] = 0;
             }
-            UniqueIdGenerator.lastRandChars[i]++;
+            //UniqueIdGenerator.lastRandChars[i]++; (NEED check)
         }
-        for (i = 0; i < 12; i++) {
+        for (let i = 0; i < 12; i++) {
             id += UniqueIdGenerator.PUSH_CHARS.charAt(UniqueIdGenerator.lastRandChars[i]);
         }
         if (id.length != 20) throw new Error('Length should be 20.');
