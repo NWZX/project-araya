@@ -37,7 +37,7 @@ const PayementStepPage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const steps = ['Detail de la commande', 'Payement', 'Validé'];
+    const steps = ['Detail de la commande', 'Payment', 'Validé'];
 
     return (
         <Layout title="Connexion" disableHeader>
