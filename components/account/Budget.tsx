@@ -39,7 +39,7 @@ const Budget = ({ className }: IBudget): JSX.Element => {
     useEffect(() => {
         async function dataFetch(): Promise<void> {
             try {
-                const result = await fetchPostJSON<undefined, Stripe.Balance | undefined>(`/store/balance`);
+                const result = await fetchPostJSON<undefined, Stripe.Balance | undefined>(`/stores/balance`);
                 setBalance(result);
             } catch (error) {
                 enqueueSnackbar(error.message, { variant: 'error' });
@@ -59,9 +59,9 @@ const Budget = ({ className }: IBudget): JSX.Element => {
                         <Typography color="textPrimary" variant="h3">
                             {balance ? (
                                 formatCurrencyString({
-                                    currency: balance.available?.[0].currency,
+                                    currency: balance.available?.[0].currency || 'eur',
                                     language: 'fr',
-                                    value: balance.available?.[0].amount,
+                                    value: balance.available?.[0].amount || 0,
                                 })
                             ) : (
                                 <Skeleton width={90} />
@@ -79,9 +79,9 @@ const Budget = ({ className }: IBudget): JSX.Element => {
                     <Typography className={classes.differenceValue} variant="body2">
                         {balance ? (
                             formatCurrencyString({
-                                currency: balance.pending?.[0].currency,
+                                currency: balance.pending?.[0].currency || 'eur',
                                 language: 'fr',
-                                value: balance.pending?.[0].amount,
+                                value: balance.pending?.[0].amount || 0,
                             })
                         ) : (
                             <Skeleton width={150} />

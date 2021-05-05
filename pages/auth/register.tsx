@@ -106,11 +106,12 @@ const RegisterPage: NextPage = (): JSX.Element => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid, isSubmitting },
     } = useForm<IFormInputs>({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         resolver: yupResolver(schema),
+        mode: 'onTouched',
     });
     const onSubmit = async (data: IFormInputs): Promise<void> => {
         try {
@@ -293,7 +294,7 @@ const RegisterPage: NextPage = (): JSX.Element => {
                                 </Accordion>
                             </Grid>
                             <Grid item xs={12} style={{ margin: '0.5rem' }}>
-                                <Button type="submit" variant="outlined" fullWidth>
+                                <Button type="submit" variant="outlined" fullWidth disabled={!isValid || isSubmitting}>
                                     Valider
                                 </Button>
                             </Grid>

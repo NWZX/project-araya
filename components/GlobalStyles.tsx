@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 height: '100%',
                 width: '100%',
             },
+            'input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button': {
+                '-webkit-appearance': 'none',
+                margin: 0,
+            },
             /* width */
             '::-webkit-scrollbar': {
                 width: '10px',

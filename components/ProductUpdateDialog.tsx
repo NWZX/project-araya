@@ -19,7 +19,7 @@ import {
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EuroIcon from '@material-ui/icons/Euro';
 import DeleteIcon from '@material-ui/icons/Delete';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Map } from 'immutable';
 import { DialogDataContext, IProduct, IProductOption, IProductOptionGroup } from '../interfaces';
@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
         textField: {
             marginBottom: theme.spacing(1),
         },
+        DialogContent: {
+            overflowY: 'hidden',
+        },
     }),
 );
 
@@ -40,27 +43,72 @@ interface InputsForm {
     description: string;
     price: number;
 }
-interface IOptionData {
+interface IOptionGroupData {
     title: string;
     type: boolean;
 }
+interface IOptionData {
+    key: string;
+    id: string;
+    title: string;
+    price: number;
+}
 
-const ProductAddDialog = (): JSX.Element => {
+const ArrayToMap = (
+    groups: IProductOptionGroup[] | undefined,
+): [Map<string, IOptionGroupData>, Map<string, IOptionData>] | undefined => {
+    if (!groups) {
+        return undefined;
+    }
+
+    let mapGroups = Map<string, IOptionGroupData>();
+    let mapOption = Map<string, IOptionData>();
+    let lastTimestamp = 0;
+    groups.forEach((v) => {
+        const { id, option, ...data } = v;
+        option.forEach((w) => {
+            const { price, ...x } = w;
+            const uniqueId = UniqueIdGenerator.generate(lastTimestamp);
+            lastTimestamp = uniqueId.timestamp;
+            mapOption = mapOption.set(uniqueId.uid, { key: id, price: price / 100, ...x });
+        });
+        mapGroups = mapGroups.set(id, data);
+    });
+    return [mapGroups, mapOption];
+};
+
+const ProductUpdateDialog = (): JSX.Element => {
     const classes = useStyles();
     const dialogContext = useContext(DialogDataContext);
-    const open = dialogContext.addProduct?.[0];
-    const setOpen = dialogContext.addProduct?.[1];
+    const open = dialogContext.updateProduct?.[0];
+    const setOpen = dialogContext.updateProduct?.[1];
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<InputsForm>();
+    } = useForm<InputsForm>({
+        mode: 'onTouched',
+    });
     //#region CustomForm Option State
-    const [optionGroupData, setOptionGroupData] = useState<Map<string, IOptionData>>(Map<string, IOptionData>());
-    const [optionData, setOptionData] = useState<
-        Map<string, { key: string; id: string; title: string; price: number }>
-    >(Map<string, { key: string; id: string; title: string; price: number }>());
+    const [optionGroupData, setOptionGroupData] = useState<Map<string, IOptionGroupData>>(
+        Map<string, IOptionGroupData>(),
+    );
+    const [optionData, setOptionData] = useState<Map<string, IOptionData>>(Map<string, IOptionData>());
+    useEffect(() => {
+        if (open?.optionGroup) {
+            reset({ title: open?.title, description: open?.description, price: (open?.price || 0) / 100 });
+            const convert = ArrayToMap(open.optionGroup);
+            if (convert) {
+                setOptionGroupData(convert[0]);
+                setOptionData(convert[1]);
+            }
+        }
+        return () => {
+            setOptionGroupData(Map<string, IOptionGroupData>());
+            setOptionData(Map<string, IOptionData>());
+        };
+    }, [open, reset]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateGroupData = (key: string, e: any): void => {
         const old = optionGroupData?.get(key);
@@ -100,7 +148,7 @@ const ProductAddDialog = (): JSX.Element => {
                     optionData
                         .filter(({ key }) => key == k)
                         .forEach(({ id, price, title }) => {
-                            o.push({ id, price, title });
+                            o.push({ id, price: price * 100, title });
                         });
                     optionGroup.push({
                         title: v.title,
@@ -116,10 +164,12 @@ const ProductAddDialog = (): JSX.Element => {
                     title: data.title,
                     description: data.description,
                     price: data.price * 100,
-                    productGroupId: open.id,
                     optionGroup,
                 };
-                await firebase.firestore().collection('products').add(product);
+                await firebase
+                    .firestore()
+                    .doc('products/' + open.id)
+                    .set(product, { merge: true });
                 handleClose();
             }
         } catch (error) {
@@ -127,17 +177,22 @@ const ProductAddDialog = (): JSX.Element => {
         }
     };
 
+    const { ref: titleRef, ...title } = register('title');
+    const { ref: descriptionRef, ...description } = register('description');
+    const { ref: priceRef, ...price } = register('price');
+
     return (
         <Dialog open={Boolean(open)} onClose={handleClose} maxWidth="md" fullWidth>
-            <DialogTitle id="form-dialog-title">Création d&apos;un produit</DialogTitle>
+            <DialogTitle id="form-dialog-title">Modification d&apos;un produit</DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <DialogContent>
+                <DialogContent className={classes.DialogContent}>
                     <Grid container spacing={2}>
                         <Grid item container xs={12} lg={12} spacing={1}>
                             <Grid item xs={12}>
                                 <TextField
                                     type="text"
-                                    {...register('title')}
+                                    inputRef={titleRef}
+                                    {...title}
                                     label="Nom"
                                     variant="outlined"
                                     fullWidth
@@ -147,7 +202,8 @@ const ProductAddDialog = (): JSX.Element => {
                                 />
                                 <TextField
                                     type="text"
-                                    {...register('description')}
+                                    inputRef={descriptionRef}
+                                    {...description}
                                     label="Description"
                                     variant="outlined"
                                     multiline
@@ -159,7 +215,8 @@ const ProductAddDialog = (): JSX.Element => {
                                 />
                                 <TextField
                                     type="number"
-                                    {...register('price')}
+                                    inputRef={priceRef}
+                                    {...price}
                                     label="Prix"
                                     variant="outlined"
                                     fullWidth
@@ -267,13 +324,14 @@ const ProductAddDialog = (): JSX.Element => {
                                                         <Grid item>
                                                             <TextField
                                                                 type="number"
+                                                                name="price"
                                                                 label="Prix"
                                                                 variant="outlined"
-                                                                name="price"
                                                                 value={w.price}
                                                                 onChange={(e) => {
                                                                     updateData(l, e);
                                                                 }}
+                                                                onWheel={(e) => e.currentTarget.blur()}
                                                                 fullWidth
                                                                 InputProps={{
                                                                     endAdornment: (
@@ -314,7 +372,7 @@ const ProductAddDialog = (): JSX.Element => {
                         Annuler
                     </Button>
                     <Button type="submit" color="primary">
-                        Ajouter
+                        Modifier
                     </Button>
                 </DialogActions>
             </form>
@@ -322,4 +380,4 @@ const ProductAddDialog = (): JSX.Element => {
     );
 };
 
-export default ProductAddDialog;
+export default ProductUpdateDialog;

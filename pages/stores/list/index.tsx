@@ -178,7 +178,7 @@ const StoreListPage: NextPage = (): JSX.Element => {
                                 <ShopCard
                                     store={v}
                                     onClick={() => {
-                                        router.push('/stores/' + v.id);
+                                        router.push({ pathname: '/stores/[id]', query: { id: v.id } });
                                     }}
                                 />
                             </Grid>

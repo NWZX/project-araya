@@ -45,7 +45,7 @@ const TotalOrders = ({ className }: ITotalProfit): JSX.Element => {
                 <Grid container justify="space-between" spacing={3}>
                     <Grid item>
                         <Typography color="textSecondary" gutterBottom variant="h6">
-                            {data ? 'PRODUITS' : <Skeleton width={90} />}
+                            {data ? 'Commande' : <Skeleton width={90} />}
                         </Typography>
                         <Typography color="textPrimary" variant="h3">
                             {data ? data.size : <Skeleton width={30} />}

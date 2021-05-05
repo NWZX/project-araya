@@ -127,7 +127,7 @@ const StorePage: NextPage = (): JSX.Element => {
                         </Grid>
                         <Grid item container xs={12} lg={3}>
                             <Grid item xs={12}>
-                                <PayementRecipe />
+                                <PayementRecipe deliveryFee={data?.deliveryFee} />
                             </Grid>
                         </Grid>
                     </Grid>

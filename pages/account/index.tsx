@@ -18,6 +18,8 @@ const AccountPage: NextPage = (): JSX.Element => {
     const router = useRouter();
     const theme = useTheme();
     const user = useAuthUser();
+    const accessLevel = (user.claims.accessLevel as unknown) as number;
+    const isAdminOrStoreAdmin = user.claims.admin || (accessLevel == 2 && router.query.id == user.id);
 
     return (
         <Layout title="Dashboard" disableHeader>
@@ -30,23 +32,29 @@ const AccountPage: NextPage = (): JSX.Element => {
                     }}
                 />
                 <BottomNavigationAction label="Commandes" icon={<Inventory />} />
-                <BottomNavigationAction label="Mon Profil" icon={<AccountCircleIcon />} />
+                <BottomNavigationAction
+                    label="Mon Profil"
+                    icon={<AccountCircleIcon />}
+                    onClick={() => {
+                        router.push('/account/profile');
+                    }}
+                />
             </BottomNavigation>
             <Grid container spacing={3} style={{ padding: theme.spacing(3) }}>
-                {user.claims.admin ||
-                    (((user.claims.accessLevel as unknown) as number) == 2 && (
-                        <>
-                            <Grid item lg={3} sm={6} xl={3} xs={12}>
-                                <Budget />
-                            </Grid>
-                            <Grid item lg={3} sm={6} xl={3} xs={12}>
-                                <TotalProducts />
-                            </Grid>
-                        </>
-                    ))}
+                {isAdminOrStoreAdmin && (
+                    <>
+                        <Grid item lg={3} sm={6} xl={3} xs={12}>
+                            <Budget />
+                        </Grid>
+                        <Grid item lg={3} sm={6} xl={3} xs={12}>
+                            <TotalProducts />
+                        </Grid>
+                    </>
+                )}
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
                     <TotalOrders />
                 </Grid>
+
                 <Grid item xs={12}>
                     <ListOrders />
                 </Grid>

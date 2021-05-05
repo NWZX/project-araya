@@ -7,11 +7,10 @@ import { DialogDataContext, IProduct, IProductGroup, IStore } from '../../../int
 import firebase from 'firebase';
 import { useState } from 'react';
 import { Rating } from '@material-ui/lab';
-import PayementRecipe from '../../../components/PayementRecipe';
-import ProductDetailDialog from '../../../components/ProductDetailDialog';
+import ProductUpdateDialog from '../../../components/ProductUpdateDialog';
 import { useRouter } from 'next/router';
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
-import { AuthAction, withAuthUser } from 'next-firebase-auth';
+import { AuthAction, withAuthUser, useAuthUser } from 'next-firebase-auth';
 import ProductList from '../../../components/ProductList';
 import ProductGroupDelDialog from '../../../components/ProductGroupDelDialog';
 import ProductGroupAddDialog from '../../../components/ProductGroupAddDialog';
@@ -49,32 +48,47 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const StorePage: NextPage = (): JSX.Element => {
+const StorePage: NextPage = (): JSX.Element | null => {
     const classes = useStyles();
     const router = useRouter();
     const { id } = router.query as { id: string };
+    const user = useAuthUser();
 
-    const [data] = useDocumentData<IStore>(firebase.firestore().doc('stores/' + id), {
+    const accessLevel = (user.claims.accessLevel as unknown) as number;
+    const isAdminOrStoreAdmin = user.claims.admin || (accessLevel == 2 && id == user.id);
+
+    const [data] = useDocumentData<IStore>(isAdminOrStoreAdmin ? firebase.firestore().doc('stores/' + id) : undefined, {
         idField: 'id',
         refField: 'ref',
     });
     const [groups] = useCollectionData<IProductGroup>(
-        firebase.firestore().collection('productGroups').where('storeId', '==', id),
+        isAdminOrStoreAdmin ? firebase.firestore().collection('productGroups').where('storeId', '==', id) : undefined,
         {
             idField: 'id',
             refField: 'ref',
         },
     );
 
+    const selectProduct = useState<IProduct | undefined>();
+    const addProduct = useState<IProductGroup | undefined>();
+    const updateProduct = useState<IProduct | undefined>();
+    const addGroup = useState<boolean>(false);
+    const delGroup = useState<IProductGroup | undefined>();
+
+    if (!isAdminOrStoreAdmin) {
+        router.push({ pathname: '/stores/[id]', query: { id: id } });
+        return null;
+    }
+
     return (
         <Layout title="Restaurant ID" disablePadding>
             <DialogDataContext.Provider
                 value={{
-                    selectProduct: useState<IProduct | undefined>(),
-                    addProduct: useState<IProductGroup | undefined>(),
-                    updateProduct: useState<IProduct | undefined>(),
-                    addGroup: useState<boolean>(false),
-                    delGroup: useState<IProductGroup | undefined>(),
+                    selectProduct,
+                    addProduct,
+                    updateProduct,
+                    addGroup,
+                    delGroup,
                 }}
             >
                 <Grid container justify="center">
@@ -121,14 +135,9 @@ const StorePage: NextPage = (): JSX.Element => {
                                     <ProductList key={v.id} group={v} edit={true} />
                                 ))}
                         </Grid>
-                        <Grid item container xs={12} lg={3}>
-                            <Grid item xs={12}>
-                                <PayementRecipe />
-                            </Grid>
-                        </Grid>
                     </Grid>
                 </Grid>
-                <ProductDetailDialog />
+                <ProductUpdateDialog />
                 <ProductGroupDelDialog />
                 <ProductGroupAddDialog />
                 <ProductAddDialog />

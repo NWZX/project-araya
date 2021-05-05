@@ -16,6 +16,7 @@ interface Props {
 const ProductList = ({ group, edit }: Props): JSX.Element => {
     const dialogContext = useContext(DialogDataContext);
     const setSelectProduct = dialogContext.selectProduct?.[1];
+    const setUpdateProduct = dialogContext.updateProduct?.[1];
     //const setAddGroup = dialogContext.addGroup?.[1];
     const setDelGroup = dialogContext.delGroup?.[1];
     const setAddProduct = dialogContext.addProduct?.[1];
@@ -59,7 +60,10 @@ const ProductList = ({ group, edit }: Props): JSX.Element => {
                                 price={v.price}
                                 imageUrl="/ressource/prod1.jpg"
                                 onClick={() => {
-                                    setSelectProduct && setSelectProduct(v);
+                                    console.log(edit);
+                                    edit
+                                        ? setUpdateProduct && setUpdateProduct(v)
+                                        : setSelectProduct && setSelectProduct(v);
                                 }}
                             />
                         </Grid>

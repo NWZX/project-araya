@@ -13,7 +13,7 @@
 
 export class UniqueIdGenerator {
     // Timestamp of last push, used to prevent local collisions if you push twice in one ms.
-    private static lastPushTime = 0;
+    //private static lastPushTime = 0;
 
     // Modeled after base64 web-safe chars, but ordered by ASCII.
     private static PUSH_CHARS = '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
@@ -25,10 +25,10 @@ export class UniqueIdGenerator {
     private static lastRandChars: number[] = [];
 
     // Generates chronologically orderable unique string one by one
-    public static generate(): string {
+    public static generate(lastPushTime = 0): { uid: string; timestamp: number } {
         let now = new Date().getTime();
-        const duplicateTime = now === UniqueIdGenerator.lastPushTime;
-        UniqueIdGenerator.lastPushTime = now;
+        const duplicateTime = now === lastPushTime;
+        lastPushTime = now;
 
         const timeStampChars = new Array(8);
         for (let i = 7; i >= 0; i--) {
@@ -56,6 +56,6 @@ export class UniqueIdGenerator {
         }
         if (id.length != 20) throw new Error('Length should be 20.');
 
-        return id.replace('-', '');
+        return { uid: id.replace('-', ''), timestamp: now };
     }
 }
