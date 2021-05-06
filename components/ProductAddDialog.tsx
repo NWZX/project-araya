@@ -100,7 +100,7 @@ const ProductAddDialog = (): JSX.Element => {
                     optionData
                         .filter(({ key }) => key == k)
                         .forEach(({ id, price, title }) => {
-                            o.push({ id, price, title });
+                            o.push({ id, price: price * 100, title });
                         });
                     optionGroup.push({
                         title: v.title,

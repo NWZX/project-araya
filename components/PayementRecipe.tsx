@@ -46,6 +46,11 @@ const PayementRecipe = ({ deliveryFee }: Props): JSX.Element => {
                             </IconButton>
                             <Typography variant="h5" color="textPrimary" align="justify">
                                 x{v.quantity} {v.name}
+                                {(v.optionNames as string[]).map((w, i) => (
+                                    <Typography variant="caption" component="div" color="textPrimary" key={i}>
+                                        {w}
+                                    </Typography>
+                                ))}
                             </Typography>
                             <Typography variant="h5" color="textPrimary" style={{ marginLeft: 'auto' }}>
                                 {formatCurrencyString({

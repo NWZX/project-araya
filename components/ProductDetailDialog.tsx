@@ -18,7 +18,7 @@ import {
 import React, { useContext, useState } from 'react';
 import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart';
 import { Map } from 'immutable';
-import { DialogDataContext } from '../interfaces';
+import { DialogDataContext, IProductOption } from '../interfaces';
 
 interface Props {}
 
@@ -27,16 +27,35 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
     const product = dialogContext.selectProduct?.[0];
     const setProduct = dialogContext.selectProduct?.[1];
     const { addItem } = useShoppingCart();
-    const [optionState, setOptionState] = useState<Map<string, boolean>>(Map<string, boolean>());
-    const [optionStateRadio, setOptionStateRadio] = useState<Map<string, string>>(Map<string, string>());
+    const [optionState, setOptionState] = useState<Map<string, [boolean, IProductOption]>>(
+        Map<string, [boolean, IProductOption]>(),
+    );
+    const [optionStateRadio, setOptionStateRadio] = useState<Map<string, [string, IProductOption]>>(
+        Map<string, [string, IProductOption]>(),
+    );
 
     const onSubmit = (): void => {
+        //TRASH CODE NEED REVIEW
         if (product && product.id) {
             let optionString = '';
-            const option = Array.from(optionState.filter((v) => v).keys());
+            const optionNames: string[] = [];
+            let optionPrice = 0;
+            const option = Array.from(
+                optionState
+                    .filter((v) => {
+                        if (v[0]) {
+                            optionPrice += v[1].price;
+                            optionNames.push(v[1].title);
+                        }
+                        return v[0];
+                    })
+                    .keys(),
+            );
             optionString = ' ' + option.join(' ');
             optionStateRadio.forEach((v) => {
-                option.push(v);
+                option.push(v[0]);
+                optionPrice += v[1].price;
+                optionNames.push(v[1].title);
                 optionString += ` ${v}`;
             });
 
@@ -44,10 +63,11 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                 id: product.id + optionString,
                 name: product.title,
                 currency: 'eur',
-                price: product.price,
+                price: product.price + optionPrice,
                 description: product.description,
                 image: undefined,
                 option: option,
+                optionNames: optionNames,
             });
             handleClose();
         }
@@ -74,13 +94,20 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                                 {v.type &&
                                     v.option[0].id &&
                                     typeof optionStateRadio.get('radio' + i) === 'undefined' &&
-                                    setOptionStateRadio(optionStateRadio.set('radio' + i, v.option[0].id))}
+                                    setOptionStateRadio(
+                                        optionStateRadio.set('radio' + i, [v.option[0].id, v.option[0]]),
+                                    )}
                                 {v.type ? (
                                     <RadioGroup
                                         row
                                         value={optionState.get('radio' + i)}
                                         onChange={(_, c) => {
-                                            setOptionStateRadio(optionStateRadio.set('radio' + i, c));
+                                            const price = v.option.find((x) => x.id == c) || {
+                                                id: '',
+                                                price: 0,
+                                                title: '',
+                                            };
+                                            setOptionStateRadio(optionStateRadio.set('radio' + i, [c, price]));
                                         }}
                                     >
                                         {v.option.map((w) => (
@@ -100,7 +127,9 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                                     <FormGroup row>
                                         {v.option.map((w) => {
                                             typeof optionState.get(w.id) === 'undefined'
-                                                ? setOptionState(optionState.set(w.id, false))
+                                                ? setOptionState(
+                                                      optionState.set(w.id, [false, { id: '', price: 0, title: '' }]),
+                                                  )
                                                 : null;
 
                                             return (
@@ -108,9 +137,9 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
                                                     key={w.id}
                                                     control={
                                                         <Checkbox
-                                                            checked={optionState.get(w.id)}
+                                                            checked={optionState.get(w.id)?.[0]}
                                                             onChange={(_, c) => {
-                                                                setOptionState(optionState.set(w.id, c));
+                                                                setOptionState(optionState.set(w.id, [c, w]));
                                                             }}
                                                         />
                                                     }
