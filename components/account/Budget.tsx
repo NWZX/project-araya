@@ -39,7 +39,7 @@ const Budget = ({ className }: IBudget): JSX.Element => {
     useEffect(() => {
         async function dataFetch(): Promise<void> {
             try {
-                const result = await fetchPostJSON<undefined, Stripe.Balance | undefined>(`/stores/balance`);
+                const result = await fetchPostJSON<undefined, Stripe.Balance | undefined>(`/api/stores/balance`);
                 setBalance(result);
             } catch (error) {
                 enqueueSnackbar(error.message, { variant: 'error' });
