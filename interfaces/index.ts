@@ -141,11 +141,11 @@ export class IStore {
     @ValidateNested()
     contact: IContact;
 
-    @Min(1000)
+    @Min(0)
     @Max(10000)
     minToOrder: number;
 
-    @Min(1000)
+    @Min(0)
     @Max(10000)
     @IsOptional()
     deliveryFee?: number;
