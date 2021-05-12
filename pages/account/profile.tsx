@@ -24,11 +24,13 @@ import Inventory from '../../components/Icons/Inventory';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IAddress, ICustomer } from '../../interfaces';
+import { IAddress, IContact, ICustomer } from '../../interfaces';
 import validator from 'validator';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
 import { useEffect } from 'react';
+import AddressForm from '../../components/account/AddressForm';
+import ContactForm from '../../components/account/ContactForm';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,6 +46,7 @@ interface IFormInputs {
     firstName: string;
     lastName: string;
     address: IAddress;
+    contact: IContact;
 }
 
 // const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[\]:;<>,.?/\\~_+\-=|]).{8,32}$/i;
@@ -80,14 +83,15 @@ const ProfilePage: NextPage = (): JSX.Element => {
         },
     );
 
+    const inputForm = useForm<IFormInputs>({
+        resolver: yupResolver(schema),
+        mode: 'onTouched',
+    });
     const {
         register,
         reset,
         formState: { errors },
-    } = useForm<IFormInputs>({
-        resolver: yupResolver(schema),
-        mode: 'onTouched',
-    });
+    } = inputForm;
 
     useEffect(() => {
         if (customer) {
@@ -95,16 +99,13 @@ const ProfilePage: NextPage = (): JSX.Element => {
                 firstName: customer.firstName,
                 lastName: customer.private.lastName,
                 address: customer.private.invoiceAddress,
+                contact: customer.private.contact,
             });
         }
     }, [customer, reset]);
 
     const { ref: lastNameRef, ...lastName } = register('lastName');
     const { ref: firstNameRef, ...firstName } = register('firstName');
-    const { ref: streetRef, ...street } = register('address.street');
-    const { ref: zipcodeRef, ...zipcode } = register('address.zipcode');
-    const { ref: cityRef, ...city } = register('address.city');
-    const { ref: countryRef, ...country } = register('address.country');
 
     return (
         <Layout title="Dashboard" disableHeader>
@@ -157,54 +158,11 @@ const ProfilePage: NextPage = (): JSX.Element => {
                     <Grid item xs={12}>
                         <Divider variant="middle" />
                     </Grid>
+                    <AddressForm {...inputForm} propName="address" />
                     <Grid item xs={12}>
-                        <TextField
-                            inputRef={streetRef}
-                            {...street}
-                            type="text"
-                            placeholder="Rue"
-                            variant="outlined"
-                            fullWidth
-                            error={Boolean(errors.address?.street)}
-                            helperText={errors.address?.street?.message}
-                        />
+                        <Divider variant="middle" />
                     </Grid>
-                    <Grid item xs={12} lg={3}>
-                        <TextField
-                            inputRef={zipcodeRef}
-                            {...zipcode}
-                            type="text"
-                            placeholder="Code Postal"
-                            variant="outlined"
-                            fullWidth
-                            error={Boolean(errors.address?.zipcode)}
-                            helperText={errors.address?.zipcode?.message}
-                        />
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                        <TextField
-                            inputRef={cityRef}
-                            {...city}
-                            type="text"
-                            placeholder="Ville"
-                            variant="outlined"
-                            fullWidth
-                            error={Boolean(errors.address?.city)}
-                            helperText={errors.address?.city?.message}
-                        />
-                    </Grid>
-                    <Grid item xs={12} lg={3}>
-                        <TextField
-                            inputRef={countryRef}
-                            {...country}
-                            type="text"
-                            placeholder="Pays"
-                            variant="outlined"
-                            fullWidth
-                            error={Boolean(errors.address?.country)}
-                            helperText={errors.address?.country?.message}
-                        />
-                    </Grid>
+                    <ContactForm {...inputForm} propName="contact" />
                 </Grid>
             </Grid>
         </Layout>
