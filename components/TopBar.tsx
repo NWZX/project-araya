@@ -65,7 +65,9 @@ const TopBar = ({ disablePadding }: Props): JSX.Element => {
                 <Toolbar>
                     <Grid alignItems="center" container>
                         <Grid item xs={5} md={3}>
-                            <img src="/icons/ms-icon-310x310.png" alt="Logo Araya" width={48} />
+                            <a href="/">
+                                <img src="/icons/ms-icon-310x310.png" alt="Logo Araya" width={48} />
+                            </a>
                         </Grid>
                         <Grid item xs={false} md={6}></Grid>
                         <Grid item container xs={7} md={3} spacing={1} justify="flex-end" alignItems="center">
