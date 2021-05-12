@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         //Check if user is Auth
         const user = await getAuthUser(req);
         if (!user?.firebaseUser || !user.id) {
-            throw new Error('Error: Ivalid token');
+            throw new Error('Error: Invalid token');
         }
 
         //Get products data
@@ -106,6 +106,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error('Error: something goes wrong at the creation of orders');
         }
 
+        //Get hostname
+        const origin = process.env.VERCEL_URL as string;
+
         // Create Checkout Sessions from body params.
         const params: Stripe.Checkout.SessionCreateParams = {
             submit_type: 'pay',
@@ -123,8 +126,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             billing_address_collection: 'auto',
             shipping_address_collection: undefined,
             line_items: line_items.validatedItems,
-            success_url: `http://localhost:3000/order/finish/{CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://localhost:3000/order/finish`,
+            success_url: `https://${origin}/order/finish/{CHECKOUT_SESSION_ID}`,
+            cancel_url: `https://${origin}/order/finish`,
         };
         const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params, {
             stripeAccount: store.private.stripeId,
