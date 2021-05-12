@@ -13,6 +13,7 @@ import {
     Avatar,
     makeStyles,
     createStyles,
+    Button,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
@@ -28,9 +29,12 @@ import { IAddress, IContact, ICustomer } from '../../interfaces';
 import validator from 'validator';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import AddressForm from '../../components/account/AddressForm';
 import ContactForm from '../../components/account/ContactForm';
+import { useSnackbar } from 'notistack';
+import { fetchPostJSON } from '../../utils/apiHelpers';
+import PasswordRequestDialog from '../../components/account/PasswordRequestDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -66,12 +70,27 @@ const schema = yup.object().shape({
         city: yup.string().min(2, 'Trop court').max(50, 'Trop long.').required('Oups, il manque quelque chose ici.'),
         country: yup.string().min(2).max(2).required('Oups, il manque quelque chose ici.'),
     }),
+    contact: yup.object().shape({
+        email: yup
+            .string()
+            .email('Hmm..., ça ne resemble pas à une email.')
+            .required('Oups, il manque quelque chose ici.'),
+        phone: yup
+            .string()
+            .test('isPhoneNumber', 'Hmm..., ça ne resemble pas à un numéro de téléphone.', (v) => {
+                if (v?.length == 0) return true;
+                return validator.isMobilePhone(v || '', 'any');
+            })
+            .required('Oups, il manque quelque chose ici.'),
+    }),
 });
 
 const ProfilePage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const theme = useTheme();
     const user = useAuthUser();
+    const [open, setOpen] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
     const router = useRouter();
     router.prefetch('/account');
 
@@ -90,8 +109,72 @@ const ProfilePage: NextPage = (): JSX.Element => {
     const {
         register,
         reset,
+        trigger,
+        getValues,
         formState: { errors },
     } = inputForm;
+
+    const handleNames = async (): Promise<void> => {
+        try {
+            const isValid = await trigger(['firstName', 'lastName']);
+            if (isValid) {
+                await customer?.ref?.set(
+                    {
+                        firstName: getValues('firstName'),
+                        private: { lastName: getValues('lastName') },
+                    } as Partial<ICustomer>,
+                    { merge: true },
+                );
+            }
+            enqueueSnackbar('Modifier', { variant: 'success' });
+        } catch (error) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+        }
+    };
+    const handleAddress = async (): Promise<void> => {
+        try {
+            const isValid = await trigger('address');
+            if (isValid) {
+                await customer?.ref?.set(
+                    {
+                        private: { invoiceAddress: getValues('address') },
+                    } as Partial<ICustomer>,
+                    { merge: true },
+                );
+            }
+            enqueueSnackbar('Modifier', { variant: 'success' });
+        } catch (error) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+        }
+    };
+    const handleContact = async (): Promise<void> => {
+        try {
+            const isValid = await trigger('contact');
+            if (isValid) {
+                await customer?.ref?.set(
+                    {
+                        private: { contact: { phone: getValues('contact.phone') } },
+                    } as Partial<ICustomer>,
+                    { merge: true },
+                );
+                if (user.email != getValues('contact.email')) {
+                    const result = await fetchPostJSON<{ newEmail: string }, { result: boolean; url: string }>(
+                        '/api/account/getEmailToken',
+                        { newEmail: getValues('contact.email') },
+                    );
+                    if (!result?.result) {
+                        throw new Error('Missing token');
+                    }
+                    await user.firebaseUser?.verifyBeforeUpdateEmail(getValues('contact.email'), { url: result.url });
+                    enqueueSnackbar('Un email de validation vous a été envoyer.', { variant: 'info' });
+                } else {
+                    enqueueSnackbar('Modifier', { variant: 'success' });
+                }
+            }
+        } catch (error) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+        }
+    };
 
     useEffect(() => {
         if (customer) {
@@ -156,15 +239,40 @@ const ProfilePage: NextPage = (): JSX.Element => {
                         />
                     </Grid>
                     <Grid item xs={12}>
+                        <Button fullWidth onClick={handleNames}>
+                            Mettre à jour
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12}>
                         <Divider variant="middle" />
                     </Grid>
                     <AddressForm {...inputForm} propName="address" />
                     <Grid item xs={12}>
+                        <Button fullWidth onClick={handleAddress}>
+                            Mettre à jour
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12}>
                         <Divider variant="middle" />
                     </Grid>
                     <ContactForm {...inputForm} propName="contact" />
+                    <Grid item xs={12}>
+                        <Button fullWidth onClick={() => setOpen(true)}>
+                            Mettre à jour
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
+            <PasswordRequestDialog
+                open={open}
+                onClose={() => {
+                    setOpen(false);
+                }}
+                onSuccess={() => {
+                    handleContact();
+                    setOpen(false);
+                }}
+            />
         </Layout>
     );
 };
