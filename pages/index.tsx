@@ -4,22 +4,19 @@ import Layout from '../components/Layout';
 
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
-import {
-    Grid,
-    TextField,
-    Fab,
-    Typography,
-    makeStyles,
-    createStyles,
-    Theme,
-    InputAdornment,
-    IconButton,
-    useMediaQuery,
-    useTheme,
-} from '@material-ui/core';
+import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Fab from '@material-ui/core/Fab';
+import Typography from '@material-ui/core/Typography';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import AlgoliaIcon from '../components/Icons/AlgoliaIcon';
+
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 
@@ -68,6 +65,7 @@ const IndexPage: NextPage = (): JSX.Element => {
     return (
         <Layout title="Araya">
             <video autoPlay loop muted className={classes.video}>
+                <source src="ressource/intro.webm" type="video/webm" />
                 <source src="ressource/intro.mp4" type="video/mp4" />
             </video>
             <Grid container alignItems="center" justify="center" className={classes.searchBox}>
