@@ -135,7 +135,7 @@ const RegisterPage: NextPage = (): JSX.Element => {
             });
             if (result.result) {
                 const sign = await firebase.auth().signInWithCustomToken(result.token);
-                sign.user?.sendEmailVerification({ url: result.url, handleCodeInApp: true });
+                await sign.user?.sendEmailVerification({ url: result.url });
                 router.push('/auth/emailValidate');
             }
         } catch (error) {
