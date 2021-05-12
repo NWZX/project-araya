@@ -88,7 +88,9 @@ const LoginPage: NextPage = (): JSX.Element => {
                         <Grid item container xs={12} lg={6} style={{ padding: '5%' }}>
                             <Grid item xs={12} style={{ margin: '0.5rem' }}>
                                 <Typography variant="h2" align="center">
-                                    Logo (Araya)
+                                    <a href="/">
+                                        <img src="/icons/ms-icon-310x310.png" alt="Logo Araya" width={192} />
+                                    </a>
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} style={{ margin: '0.5rem' }}>
