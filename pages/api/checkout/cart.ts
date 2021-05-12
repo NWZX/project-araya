@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         //Check if user is Auth
         const user = await getAuthUser(req);
-        if (!user?.firebaseUser || !user.id) {
+        if (!user?.id) {
             throw new Error('Error: Invalid token');
         }
 
@@ -101,7 +101,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         //Create order
-        const orderId = await createOrder(line_items, user.firebaseUser, delivery, storeId, address, detail);
+        const orderId = await createOrder(line_items, user, delivery, storeId, address, detail);
         if (!orderId) {
             throw new Error('Error: something goes wrong at the creation of orders');
         }

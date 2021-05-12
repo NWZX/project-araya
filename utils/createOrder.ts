@@ -1,10 +1,11 @@
+import { AuthUser } from 'next-firebase-auth';
 import { EServiceType, IAddressGeo, IOrder } from '../interfaces';
 import { getFirebaseAdmin } from './db';
 import { validateCartItemsReturn } from './getProductsByIds';
 
 export const createOrder = async (
     validatedData: validateCartItemsReturn,
-    user: firebase.default.User,
+    user: AuthUser,
     delivery: EServiceType,
     storeId: string,
     address?: IAddressGeo,
@@ -32,8 +33,8 @@ export const createOrder = async (
             .collection('orders')
             .add({
                 storeId: storeId,
-                customerId: user.uid,
-                client: { displayName: user.displayName, address: address },
+                customerId: user.id,
+                client: { displayName: user.claims.name, address: address },
                 recipe: { total: validatedData.totalToPayTTC, item: recipe },
                 status: 0,
                 detail: detail,
