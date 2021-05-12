@@ -58,7 +58,6 @@ const TopBar = ({ disablePadding }: Props): JSX.Element => {
     const isStoreEditPage: boolean = router.pathname == '/stores/[id]/edit' && Boolean(router.query.id);
     const accessLevel = (user.claims.accessLevel as unknown) as number;
     const isAdminOrStoreAdmin = user.claims.admin || (accessLevel == 2 && router.query.id == user.id);
-    console.log(router.pathname, accessLevel, isAdminOrStoreAdmin);
     return (
         <>
             <AppBar elevation={0} style={{ background: 'rgba(150,255,200,0.5)' }}>

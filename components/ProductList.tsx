@@ -60,7 +60,6 @@ const ProductList = ({ group, edit }: Props): JSX.Element => {
                                 price={v.price}
                                 imageUrl="/ressource/prod1.jpg"
                                 onClick={() => {
-                                    console.log(edit);
                                     edit
                                         ? setUpdateProduct && setUpdateProduct(v)
                                         : setSelectProduct && setSelectProduct(v);

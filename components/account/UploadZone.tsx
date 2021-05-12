@@ -26,7 +26,6 @@ const UploadZone = (): JSX.Element => {
         inputFile.current?.click();
     };
 
-    console.log('imageimage', image);
     return (
         <div>
             <input

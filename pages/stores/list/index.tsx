@@ -166,7 +166,6 @@ const StoreListPage: NextPage = (): JSX.Element => {
                                 typeof take == 'boolean' ? setIsTakeAway(take) : null;
                             }}
                             onTagsChange={(selected) => {
-                                console.log(selected);
                                 if (selected.length > 0) setSelectedTags(selected);
                                 else setSelectedTags(undefined);
                             }}
