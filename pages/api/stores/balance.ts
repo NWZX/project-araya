@@ -4,7 +4,7 @@ import { getFirebaseAdmin } from '../../../utils/db';
 import Stripe from 'stripe';
 import { IStore } from '../../../interfaces';
 
-const stripe = new Stripe(process.env.STRIPE_API || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
     typescript: true,
     apiVersion: '2020-08-27',
 });

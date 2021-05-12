@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { NextApiResponse, NextApiRequest } from 'next';
 import { getFirebaseAdmin } from '../../../utils/db';
-const stripe = new Stripe(process.env.STRIPE_API || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
     // https://github.com/stripe/stripe-node#configuration
     apiVersion: '2020-08-27',
 });
