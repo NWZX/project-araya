@@ -400,6 +400,7 @@ export class INominatimReverseResult {
                     road: string;
                     isolated_dwelling: string;
                     village: string;
+                    city: string;
                     town: string;
                     municipality: string;
                     state: string;

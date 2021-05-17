@@ -23,8 +23,8 @@ const ContactForm = ({ register, formState: { errors }, propName, disabled }: Pr
                     variant="outlined"
                     fullWidth
                     disabled={disabled}
-                    error={Boolean(errors.contact?.phone)}
-                    helperText={errors.contact?.phone?.message}
+                    error={Boolean(errors[propName]?.phone)}
+                    helperText={errors[propName]?.phone?.message}
                 />
             </Grid>
             <Grid item xs={12} lg={6}>
@@ -36,8 +36,8 @@ const ContactForm = ({ register, formState: { errors }, propName, disabled }: Pr
                     variant="outlined"
                     fullWidth
                     disabled={disabled}
-                    error={Boolean(errors.contact?.email)}
-                    helperText={errors.contact?.email?.message}
+                    error={Boolean(errors[propName]?.email)}
+                    helperText={errors[propName]?.email?.message}
                 />
             </Grid>
         </>
