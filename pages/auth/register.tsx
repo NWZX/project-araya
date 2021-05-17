@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import {
     Grid,
-    TextField,
     Typography,
     makeStyles,
     createStyles,
@@ -29,6 +28,9 @@ import { IAddress, ICustomer } from '../../interfaces';
 import validator from 'validator';
 import { ChangeEvent, useState } from 'react';
 import { NextPage } from 'next';
+import AddressForm from '../../components/auth/AddressForm';
+import AccountForm from '../../components/auth/AccountForm';
+import IdentityForm from '../../components/auth/IndentityForm';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -103,16 +105,16 @@ const RegisterPage: NextPage = (): JSX.Element => {
 
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isValid, isSubmitting },
-    } = useForm<IFormInputs>({
+    const inputForm = useForm<IFormInputs>({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         resolver: yupResolver(schema),
         mode: 'onTouched',
     });
+    const {
+        handleSubmit,
+        formState: { isValid, isSubmitting },
+    } = inputForm;
     const onSubmit = async (data: IFormInputs): Promise<void> => {
         try {
             const result = await fetchPostJSON<
@@ -174,39 +176,7 @@ const RegisterPage: NextPage = (): JSX.Element => {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Grid container spacing={1}>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('email')}
-                                                    type="email"
-                                                    placeholder="Email"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.email)}
-                                                    helperText={errors.email?.message}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('phone')}
-                                                    type="tel"
-                                                    placeholder="Tel.Mobile"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.phone)}
-                                                    helperText={errors.phone?.message}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('password')}
-                                                    type="password"
-                                                    placeholder="Password"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.password)}
-                                                    helperText={errors.password?.message}
-                                                />
-                                            </Grid>
+                                            <AccountForm {...inputForm} />
                                         </Grid>
                                     </AccordionDetails>
                                 </Accordion>
@@ -216,28 +186,7 @@ const RegisterPage: NextPage = (): JSX.Element => {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Grid container spacing={1}>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('lastName')}
-                                                    type="text"
-                                                    placeholder="Nom"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.lastName)}
-                                                    helperText={errors.lastName?.message}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('firstName')}
-                                                    type="text"
-                                                    placeholder="Prénom"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.firstName)}
-                                                    helperText={errors.firstName?.message}
-                                                />
-                                            </Grid>
+                                            <IdentityForm {...inputForm} />
                                         </Grid>
                                     </AccordionDetails>
                                 </Accordion>
@@ -247,50 +196,7 @@ const RegisterPage: NextPage = (): JSX.Element => {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Grid container spacing={1}>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('address.street')}
-                                                    type="text"
-                                                    placeholder="Rue"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.address?.street)}
-                                                    helperText={errors.address?.street?.message}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('address.zipcode')}
-                                                    type="text"
-                                                    placeholder="Code Postal"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.address?.zipcode)}
-                                                    helperText={errors.address?.zipcode?.message}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('address.city')}
-                                                    type="text"
-                                                    placeholder="Ville"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.address?.city)}
-                                                    helperText={errors.address?.city?.message}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    {...register('address.country')}
-                                                    type="text"
-                                                    placeholder="Pays"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    error={Boolean(errors.address?.country)}
-                                                    helperText={errors.address?.country?.message}
-                                                />
-                                            </Grid>
+                                            <AddressForm {...inputForm} propName="address" />
                                         </Grid>
                                     </AccordionDetails>
                                 </Accordion>

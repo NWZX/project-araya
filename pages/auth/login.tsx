@@ -58,7 +58,6 @@ const LoginPage: NextPage = (): JSX.Element => {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     const { enqueueSnackbar } = useSnackbar();
     const {
         register,
@@ -69,6 +68,8 @@ const LoginPage: NextPage = (): JSX.Element => {
         //@ts-ignore
         resolver: yupResolver(schema),
     });
+    const { ref: emailRef, ...email } = register('email');
+    const { ref: passwordRef, ...password } = register('password');
     const onSubmit = async (data: IFormInputs): Promise<void> => {
         try {
             if (!(await firebase.auth().signInWithEmailAndPassword(data.email, data.password)).user?.emailVerified) {
@@ -105,7 +106,8 @@ const LoginPage: NextPage = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={12} style={{ margin: '0.5rem' }}>
                                 <TextField
-                                    {...register('email')}
+                                    inputRef={emailRef}
+                                    {...email}
                                     type="email"
                                     autoComplete="email"
                                     placeholder="Email"
@@ -117,7 +119,8 @@ const LoginPage: NextPage = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={12} style={{ margin: '0.5rem' }}>
                                 <TextField
-                                    {...register('password')}
+                                    inputRef={passwordRef}
+                                    {...password}
                                     type="password"
                                     autoComplete="current-password"
                                     placeholder="Password"
