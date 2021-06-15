@@ -1,5 +1,7 @@
+import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { AuthAction, withAuthUser } from 'next-firebase-auth';
 import Layout from '../../components/Layout';
 import {
     Grid,
@@ -31,7 +33,6 @@ import { useSnackbar } from 'notistack';
 import { lookup } from 'country-data';
 import validator from 'validator';
 import { CartDetails, useShoppingCart } from 'use-shopping-cart';
-import { NextPage } from 'next';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -278,4 +279,9 @@ const AddressStepPage: NextPage = (): JSX.Element => {
     );
 };
 
-export default AddressStepPage;
+export default withAuthUser({
+    whenAuthed: AuthAction.RENDER,
+    whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+    authPageURL: '/auth/login?redirect=/order/start',
+})(AddressStepPage);

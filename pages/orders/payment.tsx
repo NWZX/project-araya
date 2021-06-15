@@ -12,6 +12,7 @@ import {
     StepLabel,
 } from '@material-ui/core';
 import { NextPage } from 'next';
+import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -66,4 +67,9 @@ const PayementStepPage: NextPage = (): JSX.Element => {
     );
 };
 
-export default PayementStepPage;
+export default withAuthUser({
+    whenAuthed: AuthAction.RENDER,
+    whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+    authPageURL: '/auth/login?redirect=/order/payement',
+})(PayementStepPage);
