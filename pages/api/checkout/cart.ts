@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 .doc('stores/' + storeId)
                 .get()
         ).data() as IStore;
-        if (!store.private.stripeId) {
+        if (!store.private?.stripeId) {
             throw new Error('Error: no stripe account');
         }
         const account = await stripe.accounts.retrieve(store.private.stripeId);
