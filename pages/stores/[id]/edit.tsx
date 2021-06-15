@@ -4,13 +4,11 @@ import { Grid, makeStyles, createStyles, Theme, Typography } from '@material-ui/
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 import { DialogDataContext, IProduct, IProductGroup, IStore } from '../../../interfaces';
-import firebase from 'firebase';
 import { useState } from 'react';
 import { Rating } from '@material-ui/lab';
 import ProductUpdateDialog from '../../../components/ProductUpdateDialog';
 import { useRouter } from 'next/router';
-import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
-import { AuthAction, withAuthUser, useAuthUser, getFirebaseAdmin } from 'next-firebase-auth';
+import { AuthAction, withAuthUser, getFirebaseAdmin } from 'next-firebase-auth';
 import ProductList from '../../../components/ProductList';
 import ProductGroupDelDialog from '../../../components/ProductGroupDelDialog';
 import ProductGroupAddDialog from '../../../components/ProductGroupAddDialog';
@@ -50,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+    id?: string;
     store?: IStore;
     productGroups?: IProductGroup[];
 }
@@ -82,6 +81,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, req
 
         return {
             props: {
+                id: id,
                 store: dataStore,
                 productGroups: dataGroups,
             },
@@ -92,26 +92,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, req
     }
 };
 
-const StorePage: NextPage = (): JSX.Element | null => {
+const StorePage: NextPage<Props> = ({ store: data, productGroups: groups, id }): JSX.Element | null => {
     const classes = useStyles();
     const router = useRouter();
-    const { id } = router.query as { id: string };
-    const user = useAuthUser();
-
-    const accessLevel = (user.claims.accessLevel as unknown) as number;
-    const isAdminOrStoreAdmin = user.claims.admin || (accessLevel == 2 && id == user.id);
-
-    const [data] = useDocumentData<IStore>(isAdminOrStoreAdmin ? firebase.firestore().doc('stores/' + id) : undefined, {
-        idField: 'id',
-        refField: 'ref',
-    });
-    const [groups] = useCollectionData<IProductGroup>(
-        isAdminOrStoreAdmin ? firebase.firestore().collection('productGroups').where('storeId', '==', id) : undefined,
-        {
-            idField: 'id',
-            refField: 'ref',
-        },
-    );
 
     const selectProduct = useState<IProduct | undefined>();
     const addProduct = useState<IProductGroup | undefined>();
@@ -119,8 +102,11 @@ const StorePage: NextPage = (): JSX.Element | null => {
     const addGroup = useState<boolean>(false);
     const delGroup = useState<IProductGroup | undefined>();
 
-    if (!isAdminOrStoreAdmin) {
-        router.push({ pathname: '/stores/[id]', query: { id: id } });
+    if (!data || !groups) {
+        if (!id) {
+            router.push('/404');
+        }
+        router.push({ pathname: '/stores/[id]', query: { id } });
         return null;
     }
 
@@ -190,7 +176,7 @@ const StorePage: NextPage = (): JSX.Element | null => {
     );
 };
 
-export default withAuthUser({
+export default withAuthUser<Props>({
     whenAuthed: AuthAction.RENDER,
     whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
     whenUnauthedAfterInit: AuthAction.RENDER,

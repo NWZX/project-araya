@@ -154,7 +154,7 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX
     );
 };
 
-export default withAuthUser({
+export default withAuthUser<Props>({
     whenAuthed: AuthAction.RENDER,
     whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
     whenUnauthedAfterInit: AuthAction.RENDER,
