@@ -131,7 +131,7 @@ const RegisterPage: NextPage = (): JSX.Element => {
                         },
                         invoiceAddress: data.address,
                     },
-                    createdAt: firebase.firestore.Timestamp.now(),
+                    createdAt: firebase.firestore.Timestamp.now().toMillis(),
                 },
                 password: data.password,
             });

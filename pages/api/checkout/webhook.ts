@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     await db.firestore().doc(`orders/${metadata.orderId}`).set(
                         {
                             status: 2,
-                            updatedAt: db.firestore.Timestamp.now(),
+                            updatedAt: db.firestore.Timestamp.now().toMillis(),
                         },
                         { merge: true },
                     );
@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     await db.firestore().doc(`orders/${metadata.orderId}`).set(
                         {
                             status: 1,
-                            updatedAt: db.firestore.Timestamp.now(),
+                            updatedAt: db.firestore.Timestamp.now().toMillis(),
                         },
                         { merge: true },
                     );

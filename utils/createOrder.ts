@@ -39,8 +39,8 @@ export const createOrder = async (
                 status: 0,
                 detail: detail,
                 deliveryMode: delivery,
-                createdAt: db.firestore.Timestamp.now(),
-                updatedAt: db.firestore.Timestamp.now(),
+                createdAt: db.firestore.Timestamp.now().toMillis(),
+                updatedAt: db.firestore.Timestamp.now().toMillis(),
             } as Partial<IOrder>);
         return result.id;
     } catch (error) {
