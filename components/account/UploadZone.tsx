@@ -1,13 +1,17 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, ChangeEvent } from 'react';
 import Image from 'material-ui-image';
 import ImageUploadIcon from '../Icons/ImageUploadIcon';
 
-const UploadZone = (): JSX.Element => {
+interface Props {
+    onChange?: (imageUrl: string, imageData: Blob) => void;
+}
+
+const UploadZone = ({ onChange }: Props): JSX.Element => {
     const [image, setImage] = useState('');
     const inputFile = useRef<HTMLInputElement>(null);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleFileUpload = async (e: any): Promise<void> => {
+    const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
         const { files } = e.target;
         if (files && files.length) {
             const filename = files[0].name;
@@ -18,6 +22,7 @@ const UploadZone = (): JSX.Element => {
 
             const blob = await new Response(files[0].stream()).blob();
             const url = URL.createObjectURL(blob);
+            onChange && onChange(url, blob);
             setImage(url);
         }
     };
