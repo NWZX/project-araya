@@ -10,12 +10,13 @@ import { Rating } from '@material-ui/lab';
 import ProductUpdateDialog from '../../../components/ProductUpdateDialog';
 import { useRouter } from 'next/router';
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
-import { AuthAction, withAuthUser, useAuthUser } from 'next-firebase-auth';
+import { AuthAction, withAuthUser, useAuthUser, getFirebaseAdmin } from 'next-firebase-auth';
 import ProductList from '../../../components/ProductList';
 import ProductGroupDelDialog from '../../../components/ProductGroupDelDialog';
 import ProductGroupAddDialog from '../../../components/ProductGroupAddDialog';
 import ProductAddDialog from '../../../components/ProductAddDialog';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextApiRequest, NextPage } from 'next';
+import getAuthUser from '../../../utils/getAuthUser';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,6 +48,49 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
+interface Props {
+    store?: IStore;
+    productGroups?: IProductGroup[];
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({ query, req }) => {
+    try {
+        const id: string = query.id as string;
+        const db = getFirebaseAdmin().firestore();
+        const user = await getAuthUser(req as NextApiRequest);
+        if (!user) {
+            throw new Error('Need to be authenticated.');
+        }
+
+        const accessLevel = (user?.claims.accessLevel as unknown) as number;
+        const isAdminOrStoreAdmin = (user?.claims.admin as boolean) || (accessLevel == 2 && id == user.id);
+        if (!isAdminOrStoreAdmin) {
+            throw new Error('Insufficient permissions.');
+        }
+
+        const snapStore = await db.collection('stores').doc(id).get();
+        if (!snapStore.exists) {
+            throw new Error('No matching event');
+        }
+        const dataStore = { ...(snapStore.data() as IStore), id: snapStore.id };
+
+        const snapGroups = await db.collection('productGroups').where('storeId', '==', id).get();
+
+        const dataGroups: IProductGroup[] = [];
+        snapGroups.forEach((v) => dataGroups.push({ ...(v.data() as IProductGroup), id: v.id }));
+
+        return {
+            props: {
+                store: dataStore,
+                productGroups: dataGroups,
+            },
+        };
+    } catch (error) {
+        console.log(error);
+        return { props: {} };
+    }
+};
 
 const StorePage: NextPage = (): JSX.Element | null => {
     const classes = useStyles();

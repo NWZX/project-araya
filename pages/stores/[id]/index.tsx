@@ -5,16 +5,13 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { useShoppingCart } from 'use-shopping-cart';
 
 import { DialogDataContext, IProduct, IProductGroup, IStore } from '../../../interfaces';
-import firebase from 'firebase';
 import { useEffect, useState } from 'react';
 import { Rating } from '@material-ui/lab';
 import PayementRecipe from '../../../components/PayementRecipe';
 import ProductDetailDialog from '../../../components/ProductDetailDialog';
-import { useRouter } from 'next/router';
-import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
-import { AuthAction, withAuthUser } from 'next-firebase-auth';
+import { AuthAction, getFirebaseAdmin, withAuthUser } from 'next-firebase-auth';
 import ProductList from '../../../components/ProductList';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,23 +44,42 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const StorePage: NextPage = (): JSX.Element => {
-    const classes = useStyles();
-    const router = useRouter();
-    const { clearCart } = useShoppingCart();
-    const { id } = router.query as { id: string };
+interface Props {
+    store?: IStore;
+    productGroups?: IProductGroup[];
+}
 
-    const [data] = useDocumentData<IStore>(firebase.firestore().doc('stores/' + id), {
-        idField: 'id',
-        refField: 'ref',
-    });
-    const [groups] = useCollectionData<IProductGroup>(
-        firebase.firestore().collection('productGroups').where('storeId', '==', id),
-        {
-            idField: 'id',
-            refField: 'ref',
-        },
-    );
+export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) => {
+    try {
+        const id: string = query.id as string;
+        const db = getFirebaseAdmin().firestore();
+
+        const snapStore = await db.collection('stores').doc(id).get();
+        if (!snapStore.exists) {
+            throw new Error('No matching event');
+        }
+        const dataStore = { ...(snapStore.data() as IStore), id: snapStore.id };
+
+        const snapGroups = await db.collection('productGroups').where('storeId', '==', id).get();
+
+        const dataGroups: IProductGroup[] = [];
+        snapGroups.forEach((v) => dataGroups.push({ ...(v.data() as IProductGroup), id: v.id }));
+
+        return {
+            props: {
+                store: dataStore,
+                productGroups: dataGroups,
+            },
+        };
+    } catch (error) {
+        console.log(error);
+        return { props: {} };
+    }
+};
+
+const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX.Element => {
+    const classes = useStyles();
+    const { clearCart } = useShoppingCart();
 
     useEffect(() => {
         clearCart();

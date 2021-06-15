@@ -23,6 +23,10 @@ import { createContext, Dispatch, SetStateAction } from 'react';
 // import { User } from 'path/to/interfaces';
 
 //#region Other
+export class IGeoPoint {
+    latitude: number;
+    longitude: number;
+}
 export class IAddress {
     @Length(2, 255, { message: 'Doit être compris entre 2-255 caractère' })
     street: string;
@@ -49,7 +53,7 @@ export class IAddressGeo {
     @IsISO31661Alpha2()
     country: string;
     @IsObject()
-    geolocation: firebase.firestore.GeoPoint;
+    geolocation: IGeoPoint;
 }
 
 export class IContact {
@@ -100,15 +104,15 @@ export class ICustomer {
     @ValidateNested()
     private: ICustomerPrivate;
 
-    createdAt: firebase.firestore.Timestamp;
-    updatedAt?: firebase.firestore.Timestamp;
+    createdAt: number;
+    updatedAt?: number;
 }
 class ICustomerPrivate {
     @Length(2, 30, { message: 'Doit être compris entre 2-30 caractère' })
     lastName: string;
 
     @IsOptional()
-    birthDate?: firebase.firestore.Timestamp;
+    birthDate?: number;
 
     @ValidateNested()
     invoiceAddress: IAddress;
@@ -168,8 +172,10 @@ export class IStore {
     @ValidateNested()
     private: IStorePrivate;
 
-    createdAt: firebase.firestore.Timestamp;
-    updatedAt?: firebase.firestore.Timestamp;
+    @IsOptional()
+    createdAt: number;
+    @IsOptional()
+    updatedAt?: number;
 }
 class IStorePrivate {
     @ValidateNested()
@@ -250,8 +256,8 @@ export class IProduct {
     @ValidateNested()
     optionGroup: IProductOptionGroup[];
 
-    createdAt: firebase.firestore.Timestamp;
-    updatedAt?: firebase.firestore.Timestamp;
+    createdAt: number;
+    updatedAt?: number;
 }
 export enum EProductOptionGroupType {
     Unlinked,
@@ -308,8 +314,8 @@ export class IOrder {
     @ValidateNested()
     recipe: IOrderRecipe;
 
-    createdAt: firebase.firestore.Timestamp;
-    updatedAt?: firebase.firestore.Timestamp;
+    createdAt: number;
+    updatedAt?: number;
 }
 //#endregion
 //#region Deliveror
@@ -325,12 +331,12 @@ export class IDeliveror {
 
     isInService: boolean;
 
-    currentLocation: firebase.firestore.GeoPoint;
+    currentLocation: IGeoPoint;
 
     private: IDeliverorPrivate;
 
-    createdAt: firebase.firestore.Timestamp;
-    updatedAt?: firebase.firestore.Timestamp;
+    createdAt: number;
+    updatedAt?: number;
 }
 class IDeliverorPrivate {
     @Length(2, 30)
@@ -352,8 +358,8 @@ export class IDeliverorReview {
     score: number;
     review: string;
 
-    createdAt: firebase.firestore.Timestamp;
-    updatedAt?: firebase.firestore.Timestamp;
+    createdAt: number;
+    updatedAt?: number;
 }
 //#endregion
 //#region Tags

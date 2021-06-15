@@ -3,9 +3,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useContext } from 'react';
 import ProductButton from './ProductButton';
 
-import firebase from 'firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { DialogDataContext, IProduct, IProductGroup } from '../interfaces';
+import useSWR from 'swr';
+import { fetchGetJSON } from '../utils/apiHelpers';
 
 interface Props {
     className?: string;
@@ -21,13 +21,8 @@ const ProductList = ({ group, edit }: Props): JSX.Element => {
     const setDelGroup = dialogContext.delGroup?.[1];
     const setAddProduct = dialogContext.addProduct?.[1];
 
-    const [data] = useCollectionData<IProduct>(
-        firebase.firestore().collection('products').where('productGroupId', '==', group.id),
-        {
-            idField: 'id',
-            refField: 'ref',
-        },
-    );
+    const { data } = useSWR<IProduct[]>(group.id ? `/api/products/get?pgid=${group.id}` : null, fetchGetJSON);
+
     return (
         <List
             subheader={
