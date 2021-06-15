@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout';
 import {
     Grid,
     TextField,
@@ -18,8 +18,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useSnackbar } from 'notistack';
 
 import firebase from 'firebase/app';
-import { AuthAction, withAuthUser } from 'next-firebase-auth';
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -54,11 +55,18 @@ const schema = yup.object().shape({
         .required('Oups, somethings is missing here.'),
 });
 
-const LoginPage: NextPage = (): JSX.Element => {
+const LoginPage: NextPage = (): JSX.Element | null => {
     const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { enqueueSnackbar } = useSnackbar();
+
+    const router = useRouter();
+    const user = useAuthUser();
+    if (user.firebaseUser) {
+        router.push('/');
+    }
+
     const {
         register,
         handleSubmit,
@@ -72,15 +80,22 @@ const LoginPage: NextPage = (): JSX.Element => {
     const { ref: passwordRef, ...password } = register('password');
     const onSubmit = async (data: IFormInputs): Promise<void> => {
         try {
-            if (!(await firebase.auth().signInWithEmailAndPassword(data.email, data.password)).user?.emailVerified) {
-                enqueueSnackbar('Check your email to activite this account.', { variant: 'error' });
-                firebase.auth().signOut();
+            const result = await firebase.auth().signInWithEmailAndPassword(data.email, data.password);
+            if (result.user && router.query.redirect) {
+                router.push(router.query.redirect as string);
+            } else if (result.user) {
+                if (!result.user.emailVerified) {
+                    enqueueSnackbar('Check your email to activite this account.', { variant: 'error' });
+                    firebase.auth().signOut();
+                }
+
+                router.push('/');
             }
         } catch (error) {
             enqueueSnackbar(error.message, { variant: 'error' });
         }
     };
-    return (
+    return !user.firebaseUser ? (
         <Layout title="Connexion" disableHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container alignItems="center" justify="center">
@@ -159,11 +174,11 @@ const LoginPage: NextPage = (): JSX.Element => {
                 </Grid>
             </form>
         </Layout>
-    );
+    ) : null;
 };
 
 export default withAuthUser({
-    whenAuthed: AuthAction.REDIRECT_TO_APP,
+    whenAuthed: AuthAction.RENDER,
     whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
     whenUnauthedAfterInit: AuthAction.RENDER,
     appPageURL: '/',
