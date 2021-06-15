@@ -65,7 +65,7 @@ const StorePage: NextPage = (): JSX.Element => {
     }, []);
 
     return (
-        <Layout title="Restaurant ID" disablePadding>
+        <Layout title={dataStore?.title} disablePadding>
             <DialogDataContext.Provider
                 value={{
                     selectProduct: useState<IProduct | undefined>(),
