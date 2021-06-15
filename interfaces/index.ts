@@ -67,6 +67,7 @@ export class IOrderRecipe {
     item: { id: string; name: string; option?: string[]; qty: number; total: number }[];
 }
 export enum EServiceType {
+    Error,
     TakeAway,
     OnSpot,
     Delivery,

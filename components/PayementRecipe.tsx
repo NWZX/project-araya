@@ -14,22 +14,36 @@ import {
 } from '@material-ui/core';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { useRouter } from 'next/router';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart';
 import { EServiceType } from '../interfaces';
 
 interface Props {
     deliveryFee?: number;
+    serviceType?: {
+        isTakeAway?: boolean | undefined;
+        isOnSpot?: boolean | undefined;
+        isDelivery?: boolean | undefined;
+    };
 }
 
-const PayementRecipe = ({ deliveryFee }: Props): JSX.Element => {
+const PayementRecipe = ({ deliveryFee, serviceType }: Props): JSX.Element => {
     const { totalPrice, cartCount, cartDetails, removeItem } = useShoppingCart();
     const router = useRouter();
     const items = [];
     for (const id in cartDetails) {
         items.push(cartDetails[id]);
     }
-    const [deliveryMode, setDeliveryMode] = useState(EServiceType.Delivery);
+    const [deliveryMode, setDeliveryMode] = useState(EServiceType.Error);
+
+    useEffect(() => {
+        if (serviceType) {
+            if (serviceType.isDelivery) setDeliveryMode(EServiceType.Delivery);
+            else if (serviceType.isTakeAway) setDeliveryMode(EServiceType.TakeAway);
+            else if (serviceType.isOnSpot) setDeliveryMode(EServiceType.OnSpot);
+            else setDeliveryMode(EServiceType.Error);
+        }
+    }, [serviceType]);
 
     return (
         <>
@@ -75,8 +89,24 @@ const PayementRecipe = ({ deliveryFee }: Props): JSX.Element => {
                             setDeliveryMode(parseInt(v));
                         }}
                     >
-                        <FormControlLabel value={EServiceType.Delivery} control={<Radio />} label="Livraison" />
-                        <FormControlLabel value={EServiceType.TakeAway} control={<Radio />} label="Click&Collect" />
+                        <FormControlLabel
+                            value={EServiceType.Delivery}
+                            disabled={!serviceType?.isDelivery}
+                            control={<Radio />}
+                            label="Livraison"
+                        />
+                        <FormControlLabel
+                            value={EServiceType.TakeAway}
+                            disabled={!serviceType?.isTakeAway}
+                            control={<Radio />}
+                            label="A emporté"
+                        />
+                        <FormControlLabel
+                            value={EServiceType.OnSpot}
+                            disabled={!serviceType?.isOnSpot}
+                            control={<Radio />}
+                            label="Sur place"
+                        />
                     </RadioGroup>
                 </FormControl>
             </Box>

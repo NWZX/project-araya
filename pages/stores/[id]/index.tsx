@@ -9,9 +9,12 @@ import { useEffect, useState } from 'react';
 import { Rating } from '@material-ui/lab';
 import PayementRecipe from '../../../components/PayementRecipe';
 import ProductDetailDialog from '../../../components/ProductDetailDialog';
-import { AuthAction, getFirebaseAdmin, withAuthUser } from 'next-firebase-auth';
+import { useRouter } from 'next/router';
+import { AuthAction, withAuthUser } from 'next-firebase-auth';
 import ProductList from '../../../components/ProductList';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
+import useSWR from 'swr';
+import { fetchGetJSON } from '../../../utils/apiHelpers';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,42 +47,17 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
-    store?: IStore;
-    productGroups?: IProductGroup[];
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) => {
-    try {
-        const id: string = query.id as string;
-        const db = getFirebaseAdmin().firestore();
-
-        const snapStore = await db.collection('stores').doc(id).get();
-        if (!snapStore.exists) {
-            throw new Error('No matching event');
-        }
-        const dataStore = { ...(snapStore.data() as IStore), id: snapStore.id };
-
-        const snapGroups = await db.collection('productGroups').where('storeId', '==', id).get();
-
-        const dataGroups: IProductGroup[] = [];
-        snapGroups.forEach((v) => dataGroups.push({ ...(v.data() as IProductGroup), id: v.id }));
-
-        return {
-            props: {
-                store: dataStore,
-                productGroups: dataGroups,
-            },
-        };
-    } catch (error) {
-        console.log(error);
-        return { props: {} };
-    }
-};
-
-const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX.Element => {
+const StorePage: NextPage = (): JSX.Element => {
     const classes = useStyles();
+    const router = useRouter();
     const { clearCart } = useShoppingCart();
+    const { id } = router.query as { id: string };
+
+    const { data } = useSWR<{ dataStore: IStore; dataGroups: IProductGroup[] }>(
+        id ? `/api/stores/get?id=${id}` : null,
+        fetchGetJSON,
+    );
+    const { dataStore, dataGroups } = data || {};
 
     useEffect(() => {
         clearCart();
@@ -111,14 +89,16 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX
                             <div className={classes.imageBackdrop}></div>
                             <Grid item className={classes.itemTop}>
                                 <Typography variant="h2" align="center" component="h1">
-                                    {data?.title}
+                                    {dataStore?.title}
                                 </Typography>
                                 <Typography variant="h6" align="center" component="p">
                                     <LocationOnIcon />
-                                    {data &&
-                                        `${data.address.street}, ${
-                                            data.address.optional ? '(' + data.address.optional + '), ' : ''
-                                        }${data.address.zipcode} ${data?.address.city}, ${data.address.country}`}
+                                    {dataStore &&
+                                        `${dataStore.address.street}, ${
+                                            dataStore.address.optional ? '(' + dataStore.address.optional + '), ' : ''
+                                        }${dataStore.address.zipcode} ${dataStore.address.city}, ${
+                                            dataStore.address.country
+                                        }`}
                                 </Typography>
                                 <Typography align="center" component="div">
                                     <Rating name="half-rating" defaultValue={2.5} precision={0.1} readOnly />
@@ -133,7 +113,7 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX
                             </Grid>
                         </Grid>
                         <Grid item xs={12} lg={9}>
-                            {groups
+                            {dataGroups
                                 ?.sort((a, b) => a.index - b.index)
                                 .map((v) => (
                                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -143,7 +123,10 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX
                         </Grid>
                         <Grid item container xs={12} lg={3}>
                             <Grid item xs={12}>
-                                <PayementRecipe deliveryFee={data?.deliveryFee} />
+                                <PayementRecipe
+                                    deliveryFee={dataStore?.deliveryFee}
+                                    serviceType={dataStore?.serviceType}
+                                />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -154,7 +137,7 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups }): JSX
     );
 };
 
-export default withAuthUser<Props>({
+export default withAuthUser({
     whenAuthed: AuthAction.RENDER,
     whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
     whenUnauthedAfterInit: AuthAction.RENDER,

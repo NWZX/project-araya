@@ -8,13 +8,14 @@ import { useState } from 'react';
 import { Rating } from '@material-ui/lab';
 import ProductUpdateDialog from '../../../components/ProductUpdateDialog';
 import { useRouter } from 'next/router';
-import { AuthAction, withAuthUser, getFirebaseAdmin } from 'next-firebase-auth';
+import { AuthAction, withAuthUser, useAuthUser } from 'next-firebase-auth';
 import ProductList from '../../../components/ProductList';
 import ProductGroupDelDialog from '../../../components/ProductGroupDelDialog';
 import ProductGroupAddDialog from '../../../components/ProductGroupAddDialog';
 import ProductAddDialog from '../../../components/ProductAddDialog';
-import { GetServerSideProps, NextApiRequest, NextPage } from 'next';
-import getAuthUser from '../../../utils/getAuthUser';
+import { NextPage } from 'next';
+import { fetchGetJSON } from '../../../utils/apiHelpers';
+import useSWR from 'swr';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,54 +48,20 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
-    id?: string;
-    store?: IStore;
-    productGroups?: IProductGroup[];
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({ query, req }) => {
-    try {
-        const id: string = query.id as string;
-        const db = getFirebaseAdmin().firestore();
-        const user = await getAuthUser(req as NextApiRequest);
-        if (!user) {
-            throw new Error('Need to be authenticated.');
-        }
-
-        const accessLevel = (user?.claims.accessLevel as unknown) as number;
-        const isAdminOrStoreAdmin = (user?.claims.admin as boolean) || (accessLevel == 2 && id == user.id);
-        if (!isAdminOrStoreAdmin) {
-            throw new Error('Insufficient permissions.');
-        }
-
-        const snapStore = await db.collection('stores').doc(id).get();
-        if (!snapStore.exists) {
-            throw new Error('No matching event');
-        }
-        const dataStore = { ...(snapStore.data() as IStore), id: snapStore.id };
-
-        const snapGroups = await db.collection('productGroups').where('storeId', '==', id).get();
-
-        const dataGroups: IProductGroup[] = [];
-        snapGroups.forEach((v) => dataGroups.push({ ...(v.data() as IProductGroup), id: v.id }));
-
-        return {
-            props: {
-                id: id,
-                store: dataStore,
-                productGroups: dataGroups,
-            },
-        };
-    } catch (error) {
-        console.log(error);
-        return { props: {} };
-    }
-};
-
-const StorePage: NextPage<Props> = ({ store: data, productGroups: groups, id }): JSX.Element | null => {
+const StorePage: NextPage = (): JSX.Element | null => {
     const classes = useStyles();
     const router = useRouter();
+    const { id } = router.query as { id: string };
+    const user = useAuthUser();
+
+    const accessLevel = (user.claims.accessLevel as unknown) as number;
+    const isAdminOrStoreAdmin = user.claims.admin || (accessLevel == 2 && id == user.id);
+
+    const { data } = useSWR<{ dataStore: IStore; dataGroups: IProductGroup[] }>(
+        id && isAdminOrStoreAdmin ? `/api/stores/get?id=${id}` : null,
+        fetchGetJSON,
+    );
+    const { dataStore, dataGroups } = data || {};
 
     const selectProduct = useState<IProduct | undefined>();
     const addProduct = useState<IProductGroup | undefined>();
@@ -102,11 +69,8 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups, id }):
     const addGroup = useState<boolean>(false);
     const delGroup = useState<IProductGroup | undefined>();
 
-    if (!data || !groups) {
-        if (!id) {
-            router.push('/404');
-        }
-        router.push({ pathname: '/stores/[id]', query: { id } });
+    if (!isAdminOrStoreAdmin) {
+        router.push({ pathname: '/stores/[id]', query: { id: id } });
         return null;
     }
 
@@ -135,14 +99,16 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups, id }):
                             <div className={classes.imageBackdrop}></div>
                             <Grid item className={classes.itemTop}>
                                 <Typography variant="h2" align="center" component="h1">
-                                    {data?.title}
+                                    {dataStore?.title}
                                 </Typography>
                                 <Typography variant="h6" align="center" component="p">
                                     <LocationOnIcon />
-                                    {data &&
-                                        `${data.address.street}, ${
-                                            data.address.optional ? '(' + data.address.optional + '), ' : ''
-                                        }${data.address.zipcode} ${data?.address.city}, ${data.address.country}`}
+                                    {dataStore &&
+                                        `${dataStore.address.street}, ${
+                                            dataStore.address.optional ? '(' + dataStore.address.optional + '), ' : ''
+                                        }${dataStore.address.zipcode} ${dataStore?.address.city}, ${
+                                            dataStore.address.country
+                                        }`}
                                 </Typography>
                                 <Typography align="center" component="div">
                                     <Rating name="half-rating" defaultValue={2.5} precision={0.1} readOnly />
@@ -157,7 +123,7 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups, id }):
                             </Grid>
                         </Grid>
                         <Grid item xs={12} lg={9}>
-                            {groups
+                            {dataGroups
                                 ?.sort((a, b) => a.index - b.index)
                                 .map((v) => (
                                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -176,7 +142,7 @@ const StorePage: NextPage<Props> = ({ store: data, productGroups: groups, id }):
     );
 };
 
-export default withAuthUser<Props>({
+export default withAuthUser({
     whenAuthed: AuthAction.RENDER,
     whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
     whenUnauthedAfterInit: AuthAction.RENDER,
