@@ -12,12 +12,17 @@ import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/firestore';
 import initAuth from '../utils/initAuth';
-initAuth();
+import { createMuiTheme } from '@material-ui/core/styles';
 
 import { CartProvider } from 'use-shopping-cart';
 import getStripe from '../utils/getStripeJS';
+import { useMediaQuery } from '@material-ui/core';
+
+initAuth();
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
     useEffect(() => {
         // Remove the server-side injected CSS.
         const jssStyles = document.querySelector('#jss-server-side');
@@ -27,7 +32,12 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     }, []);
 
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider
+            theme={createMuiTheme({
+                ...theme,
+                palette: { ...theme.palette, type: prefersDarkMode ? 'dark' : 'light' },
+            })}
+        >
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
             <GlobalStyles />
