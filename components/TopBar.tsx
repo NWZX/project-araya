@@ -100,9 +100,10 @@ const TopBar = ({ disablePadding }: Props): JSX.Element => {
                                     <Menu
                                         id="simple-menu"
                                         anchorEl={anchorEl}
+                                        getContentAnchorEl={null}
                                         anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'left',
+                                            vertical: 'top',
+                                            horizontal: 'right',
                                         }}
                                         transformOrigin={{
                                             vertical: 'top',
