@@ -71,7 +71,7 @@ const StorePage: NextPage = (): JSX.Element | null => {
     }
 
     return (
-        <Layout title="Restaurant ID" disablePadding>
+        <Layout title={dataStore?.title} disablePadding>
             <DialogDataProvider>
                 <Grid container justify="center">
                     <Grid item container justify="center" xs={12} lg={12}>

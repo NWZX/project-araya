@@ -1,18 +1,16 @@
-import Layout from 'components/Layout';
-
-import { AuthAction, withAuthUser } from 'next-firebase-auth';
-
-import { Grid, useTheme, BottomNavigation, BottomNavigationAction } from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import HomeIcon from '@material-ui/icons/Home';
-import { useAuthUser } from 'next-firebase-auth';
-import Budget from 'components/account/Budget';
-import { useRouter } from 'next/router';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { AuthAction, withAuthUser } from 'next-firebase-auth';
+import { useAuthUser } from 'next-firebase-auth';
+
+import { Grid, useTheme } from '@material-ui/core';
+
+import Layout from 'components/Layout';
+import Budget from 'components/account/Budget';
 import TotalOrders from 'components/account/TotalOrders';
 import ListOrders from 'components/account/ListOrders';
 import TotalProducts from 'components/account/TotalProducts';
-import Inventory from 'icons/Inventory';
+import TopTab from 'components/account/TopTab';
 
 const AccountPage: NextPage = (): JSX.Element => {
     const router = useRouter();
@@ -22,24 +20,8 @@ const AccountPage: NextPage = (): JSX.Element => {
     const isAdminOrStoreAdmin = user.claims.admin || (accessLevel == 2 && router.query.id == user.id);
 
     return (
-        <Layout title="Dashboard" disableHeader>
-            <BottomNavigation value={1} showLabels>
-                <BottomNavigationAction
-                    label="Retour"
-                    icon={<HomeIcon />}
-                    onClick={() => {
-                        router.push('/');
-                    }}
-                />
-                <BottomNavigationAction label="Commandes" icon={<Inventory />} />
-                <BottomNavigationAction
-                    label="Mon Profil"
-                    icon={<AccountCircleIcon />}
-                    onClick={() => {
-                        router.push('/account/profile');
-                    }}
-                />
-            </BottomNavigation>
+        <Layout title="Tableau de bord" disableHeader>
+            <TopTab selected={1} />
             <Grid container spacing={3} style={{ padding: theme.spacing(3) }}>
                 {isAdminOrStoreAdmin && (
                     <>

@@ -1,12 +1,13 @@
-import Layout from 'components/Layout';
+import { useEffect, useState } from 'react';
 
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useAuthUser } from 'next-firebase-auth';
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
 import {
     Grid,
     useTheme,
-    BottomNavigation,
-    BottomNavigationAction,
     TextField,
     Divider,
     Typography,
@@ -18,26 +19,24 @@ import {
     FormLabel,
     Button,
 } from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import HomeIcon from '@material-ui/icons/Home';
 import EuroIcon from '@material-ui/icons/Euro';
-import { useAuthUser } from 'next-firebase-auth';
-import { useRouter } from 'next/router';
-import { NextPage } from 'next';
-import Inventory from 'icons/Inventory';
 
 import * as yup from 'yup';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IAddress, IAddressGeo, IContact, ICustomer, IStore } from 'interfaces';
 import validator from 'validator';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
+
 import firebase from 'firebase';
-import { useEffect, useState } from 'react';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+
+import { IAddress, IAddressGeo, IContact, ICustomer, IStore } from 'interfaces';
+import { fetchPostJSON } from 'utils/apiHelpers';
+
+import Layout from 'components/Layout';
 import AddressForm from 'components/account/AddressForm';
 import ContactForm from 'components/account/ContactForm';
 import UploadZone from 'components/account/UploadZone';
-import { fetchPostJSON } from 'utils/apiHelpers';
+import TopTab from 'components/account/TopTab';
 
 interface IFormInputs {
     firstName: string;
@@ -166,23 +165,7 @@ const RegisterStorePage: NextPage = (): JSX.Element => {
 
     return (
         <Layout title="Ouvrir un magasin" disableHeader>
-            <BottomNavigation value={2} showLabels>
-                <BottomNavigationAction
-                    label="Retour"
-                    icon={<HomeIcon />}
-                    onClick={() => {
-                        router.push('/');
-                    }}
-                />
-                <BottomNavigationAction
-                    label="Commandes"
-                    icon={<Inventory />}
-                    onClick={() => {
-                        router.push('/account');
-                    }}
-                />
-                <BottomNavigationAction label="Mon Profil" icon={<AccountCircleIcon />} />
-            </BottomNavigation>
+            <TopTab selected={3} />
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3} justify="center" style={{ padding: theme.spacing(3) }}>
                     <Grid item container spacing={3} lg={9} sm={12} xl={10} xs={12}>

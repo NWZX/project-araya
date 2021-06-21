@@ -7,24 +7,20 @@ interface IDialogData {
     updateProduct?: [IProduct | undefined, Dispatch<SetStateAction<IProduct | undefined>>];
     addGroup?: [boolean, Dispatch<SetStateAction<boolean>>];
     delGroup?: [IProductGroup | undefined, Dispatch<SetStateAction<IProductGroup | undefined>>];
+    review?: [string | undefined, Dispatch<SetStateAction<string | undefined>>];
 }
 
 const DialogDataContext = createContext<IDialogData>({});
 export const DialogDataProvider: React.FC = ({ children }) => {
-    const selectProduct = useState<IProduct | undefined>();
-    const addProduct = useState<IProductGroup | undefined>();
-    const updateProduct = useState<IProduct | undefined>();
-    const addGroup = useState<boolean>(false);
-    const delGroup = useState<IProductGroup | undefined>();
-
     return (
         <DialogDataContext.Provider
             value={{
-                selectProduct,
-                addProduct,
-                updateProduct,
-                addGroup,
-                delGroup,
+                selectProduct: useState<IProduct | undefined>(),
+                addProduct: useState<IProductGroup | undefined>(),
+                updateProduct: useState<IProduct | undefined>(),
+                addGroup: useState<boolean>(false),
+                delGroup: useState<IProductGroup | undefined>(),
+                review: useState<string | undefined>(),
             }}
         >
             {children}

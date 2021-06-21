@@ -1,21 +1,25 @@
-import Link from 'next/link';
-import Layout from 'components/Layout';
+import { useEffect } from 'react';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { AuthAction, withAuthUser } from 'next-firebase-auth';
+import useSWR from 'swr';
+
 import { Grid, makeStyles, createStyles, Theme, Typography } from '@material-ui/core';
+import { Rating } from '@material-ui/lab';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import { useShoppingCart } from 'use-shopping-cart';
 
 import { IProductGroup, IStore } from 'interfaces';
 import { DialogDataProvider } from 'interfaces/DialogDataContext';
-import { useEffect } from 'react';
-import { Rating } from '@material-ui/lab';
-import PayementRecipe from 'components/PayementRecipe';
-import ProductDetailDialog from 'components/store/ProductDetailDialog';
-import { useRouter } from 'next/router';
-import { AuthAction, withAuthUser } from 'next-firebase-auth';
-import ProductList from 'components/store/ProductList';
-import { NextPage } from 'next';
-import useSWR from 'swr';
 import { fetchGetJSON } from 'utils/apiHelpers';
+
+import { useShoppingCart } from 'use-shopping-cart';
+
+import Layout from 'components/Layout';
+import PayementRecipe from 'components/PayementRecipe';
+import ProductList from 'components/store/ProductList';
+import ProductDetailDialog from 'components/store/ProductDetailDialog';
+import ReviewDialog from 'components/store/ReviewDialog';
+import ReviewDialogOpener from 'components/store/ReviewDialog/ReviewDialogOpener';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -97,11 +101,7 @@ const StorePage: NextPage = (): JSX.Element => {
                                     <Rating name="half-rating" defaultValue={2.5} precision={0.1} readOnly />
                                 </Typography>
                                 <Typography variant="button" align="center" component="div">
-                                    (
-                                    <Link href="#">
-                                        <a>Voir les avis</a>
-                                    </Link>
-                                    )
+                                    <ReviewDialogOpener id={id} />
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -124,6 +124,7 @@ const StorePage: NextPage = (): JSX.Element => {
                         </Grid>
                     </Grid>
                 </Grid>
+                <ReviewDialog />
                 <ProductDetailDialog />
             </DialogDataProvider>
         </Layout>

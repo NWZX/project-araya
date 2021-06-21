@@ -1,40 +1,29 @@
-import Layout from 'components/Layout';
+import { useEffect, useState } from 'react';
 
-import { AuthAction, withAuthUser } from 'next-firebase-auth';
-
-import {
-    Grid,
-    Theme,
-    useTheme,
-    BottomNavigation,
-    BottomNavigationAction,
-    TextField,
-    Divider,
-    Avatar,
-    makeStyles,
-    createStyles,
-    Button,
-} from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import HomeIcon from '@material-ui/icons/Home';
+import { NextPage } from 'next';
 import { useAuthUser } from 'next-firebase-auth';
 import { useRouter } from 'next/router';
-import { NextPage } from 'next';
-import Inventory from 'icons/Inventory';
+import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
-import * as yup from 'yup';
+import { Grid, Theme, useTheme, TextField, Divider, Avatar, makeStyles, createStyles, Button } from '@material-ui/core';
+
 import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IAddress, IContact, ICustomer } from 'interfaces';
 import validator from 'validator';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { useSnackbar } from 'notistack';
+
 import firebase from 'firebase';
-import { useEffect, useState } from 'react';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+
+import { IAddress, IContact, ICustomer } from 'interfaces';
+import { fetchPostJSON } from 'utils/apiHelpers';
+
+import Layout from 'components/Layout';
 import AddressForm from 'components/account/AddressForm';
 import ContactForm from 'components/account/ContactForm';
-import { useSnackbar } from 'notistack';
-import { fetchPostJSON } from 'utils/apiHelpers';
 import PasswordRequestDialog from 'components/account/PasswordRequestDialog';
+import TopTab from 'components/account/TopTab';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -191,24 +180,8 @@ const ProfilePage: NextPage = (): JSX.Element => {
     const { ref: firstNameRef, ...firstName } = register('firstName');
 
     return (
-        <Layout title="Dashboard" disableHeader>
-            <BottomNavigation value={2} showLabels>
-                <BottomNavigationAction
-                    label="Retour"
-                    icon={<HomeIcon />}
-                    onClick={() => {
-                        router.push('/');
-                    }}
-                />
-                <BottomNavigationAction
-                    label="Commandes"
-                    icon={<Inventory />}
-                    onClick={() => {
-                        router.push('/account');
-                    }}
-                />
-                <BottomNavigationAction label="Mon Profil" icon={<AccountCircleIcon />} />
-            </BottomNavigation>
+        <Layout title="Profile" disableHeader>
+            <TopTab selected={2} />
             <Grid container spacing={3} justify="center" style={{ padding: theme.spacing(3) }}>
                 <Grid item container spacing={3} lg={9} sm={12} xl={10} xs={12}>
                     <Grid item xs={12}>
