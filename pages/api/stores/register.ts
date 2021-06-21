@@ -1,10 +1,10 @@
 import { NextApiResponse, NextApiRequest } from 'next';
-import { EUsersRank, ICustomer, IStore } from '../../../interfaces';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { EUsersRank, ICustomer, IStore } from 'interfaces';
+import { getFirebaseAdmin } from 'utils/db';
 import { validate } from 'class-validator';
-import getAlgolia from '../../../utils/getAlgolia';
-import getAuthUser from '../../../utils/getAuthUser';
-import { UniqueIdGenerator } from '../../../utils/UIDG';
+import getAlgolia from 'utils/getAlgolia';
+import getAuthUser from 'utils/getAuthUser';
+import { UniqueIdGenerator } from 'utils/UIDG';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     if (req.method !== 'POST') {

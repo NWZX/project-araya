@@ -1,6 +1,6 @@
 import { NextApiResponse, NextApiRequest } from 'next';
 import jwt from 'jsonwebtoken';
-import getAuthUser from '../../../utils/getAuthUser';
+import getAuthUser from 'utils/getAuthUser';
 
 type ReqBody = {
     newEmail: string;

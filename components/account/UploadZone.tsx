@@ -1,6 +1,6 @@
 import { useState, useRef, ChangeEvent } from 'react';
 import Image from 'material-ui-image';
-import ImageUploadIcon from '../Icons/ImageUploadIcon';
+import ImageUploadIcon from 'icons/ImageUploadIcon';
 
 interface Props {
     onChange?: (imageUrl: string, imageData: Blob) => void;

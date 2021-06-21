@@ -5,7 +5,7 @@ import firebase from 'firebase';
 import { useAuthUser } from 'next-firebase-auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Skeleton } from '@material-ui/lab';
-import Inventory from '../Icons/Inventory';
+import Inventory from 'icons/Inventory';
 
 const useStyles = makeStyles(() => ({
     root: {

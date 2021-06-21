@@ -16,7 +16,7 @@ import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
-import { IStore } from '../interfaces';
+import { IStore } from 'interfaces';
 
 const useStyles = makeStyles(() =>
     createStyles({

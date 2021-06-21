@@ -19,11 +19,12 @@ import {
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EuroIcon from '@material-ui/icons/Euro';
 import DeleteIcon from '@material-ui/icons/Delete';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Map } from 'immutable';
-import { DialogDataContext, IProduct, IProductOption, IProductOptionGroup } from '../interfaces';
-import { UniqueIdGenerator } from '../utils/UIDG';
+import { IProduct, IProductOption, IProductOptionGroup } from 'interfaces';
+import { useDialogData } from 'interfaces/DialogDataContext';
+import { UniqueIdGenerator } from 'utils/UIDG';
 
 import firebase from 'firebase';
 
@@ -47,7 +48,7 @@ interface IOptionData {
 
 const ProductAddDialog = (): JSX.Element => {
     const classes = useStyles();
-    const dialogContext = useContext(DialogDataContext);
+    const dialogContext = useDialogData();
     const open = dialogContext.addProduct?.[0];
     const setOpen = dialogContext.addProduct?.[1];
     const {

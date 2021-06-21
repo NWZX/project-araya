@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Avatar, Box, Card, CardContent, Grid, Typography, colors, makeStyles } from '@material-ui/core';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import MoneyIcon from '@material-ui/icons/Money';
-import { fetchPostJSON } from '../../utils/apiHelpers';
+import { fetchPostJSON } from 'utils/apiHelpers';
 import { useSnackbar } from 'notistack';
 import Stripe from 'stripe';
 import { Skeleton } from '@material-ui/lab';

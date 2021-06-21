@@ -1,4 +1,4 @@
-import Layout from '../../components/Layout';
+import Layout from 'components/Layout';
 
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
@@ -20,21 +20,21 @@ import HomeIcon from '@material-ui/icons/Home';
 import { useAuthUser } from 'next-firebase-auth';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
-import Inventory from '../../components/Icons/Inventory';
+import Inventory from 'icons/Inventory';
 
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IAddress, IContact, ICustomer } from '../../interfaces';
+import { IAddress, IContact, ICustomer } from 'interfaces';
 import validator from 'validator';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
 import { useEffect, useState } from 'react';
-import AddressForm from '../../components/account/AddressForm';
-import ContactForm from '../../components/account/ContactForm';
+import AddressForm from 'components/account/AddressForm';
+import ContactForm from 'components/account/ContactForm';
 import { useSnackbar } from 'notistack';
-import { fetchPostJSON } from '../../utils/apiHelpers';
-import PasswordRequestDialog from '../../components/account/PasswordRequestDialog';
+import { fetchPostJSON } from 'utils/apiHelpers';
+import PasswordRequestDialog from 'components/account/PasswordRequestDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

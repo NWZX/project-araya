@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import Layout from '../components/Layout';
+import Layout from 'components/Layout';
 
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
@@ -15,7 +15,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import AlgoliaIcon from '../components/Icons/AlgoliaIcon';
+import AlgoliaIcon from 'icons/AlgoliaIcon';
 
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';

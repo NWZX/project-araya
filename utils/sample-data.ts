@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import { ICustomer, IDeliveror } from '../interfaces';
+import { ICustomer, IDeliveror } from 'interfaces';
 
 /** Dummy user data. */
 export const sampleCustomersData: ICustomer[] = [

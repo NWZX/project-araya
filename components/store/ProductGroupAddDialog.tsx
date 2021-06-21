@@ -8,13 +8,13 @@ import {
     Grid,
     TextField,
 } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
-import { DialogDataContext } from '../interfaces';
+import React, { useState } from 'react';
+import { useDialogData } from 'interfaces/DialogDataContext';
 
 interface Props {}
 
 const ProductGroupAddDialog = ({}: Props): JSX.Element => {
-    const dialogContext = useContext(DialogDataContext);
+    const dialogContext = useDialogData();
     const open = dialogContext.addGroup?.[0];
     const setOpen = dialogContext.addGroup?.[1];
     const [title, setTitle] = useState('');
@@ -29,7 +29,7 @@ const ProductGroupAddDialog = ({}: Props): JSX.Element => {
     return (
         <form>
             <Dialog open={Boolean(open)} onClose={handleClose}>
-                <DialogTitle id="form-dialog-title">Création d&apos;un groupe</DialogTitle>
+                <DialogTitle id="form-dialog-title">Crée un groupe</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>

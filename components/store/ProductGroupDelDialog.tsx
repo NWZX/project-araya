@@ -1,12 +1,13 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Grid } from '@material-ui/core';
-import React, { useContext } from 'react';
-import { DialogDataContext, IProductGroup } from '../interfaces';
-import { fetchPostJSON } from '../utils/apiHelpers';
+import React from 'react';
+import { IProductGroup } from 'interfaces';
+import { useDialogData } from 'interfaces/DialogDataContext';
+import { fetchPostJSON } from 'utils/apiHelpers';
 
 interface Props {}
 
 const ProductGroupDelDialog = ({}: Props): JSX.Element => {
-    const dialogContext = useContext(DialogDataContext);
+    const dialogContext = useDialogData();
     const group = dialogContext.delGroup?.[0];
     const setGroup = dialogContext.delGroup?.[1];
 

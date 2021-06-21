@@ -17,7 +17,7 @@ import {
     Typography,
     useTheme,
 } from '@material-ui/core';
-import { EDelivreryStatus, IOrderRecipe } from '../../interfaces';
+import { EDelivreryStatus, IOrderRecipe } from 'interfaces';
 import OrderDetailDialog from './OrderDetailDialog';
 
 const data = [

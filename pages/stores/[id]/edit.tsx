@@ -1,20 +1,21 @@
 import Link from 'next/link';
-import Layout from '../../../components/Layout';
+import Layout from 'components/Layout';
 import { Grid, makeStyles, createStyles, Theme, Typography } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
-import { DialogDataContext, IProduct, IProductGroup, IStore } from '../../../interfaces';
-import { useState } from 'react';
+import { IProductGroup, IStore } from 'interfaces';
+import { DialogDataProvider } from 'interfaces/DialogDataContext';
 import { Rating } from '@material-ui/lab';
-import ProductUpdateDialog from '../../../components/ProductUpdateDialog';
+import ProductUpdateDialog from 'components/store/ProductUpdateDialog';
 import { useRouter } from 'next/router';
 import { AuthAction, withAuthUser, useAuthUser } from 'next-firebase-auth';
-import ProductList from '../../../components/ProductList';
-import ProductGroupDelDialog from '../../../components/ProductGroupDelDialog';
-import ProductGroupAddDialog from '../../../components/ProductGroupAddDialog';
-import ProductAddDialog from '../../../components/ProductAddDialog';
+import ProductList from 'components/store/ProductList';
+import ProductGroupDelDialog from 'components/store/ProductGroupDelDialog';
+import ProductGroupAddDialog from 'components/store/ProductGroupAddDialog';
+import ProductAddDialog from 'components/store/ProductAddDialog';
+import AddGroupButton from 'components/store/AddGroupButton';
 import { NextPage } from 'next';
-import { fetchGetJSON } from '../../../utils/apiHelpers';
+import { fetchGetJSON } from 'utils/apiHelpers';
 import useSWR from 'swr';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,8 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
             transition: theme.transitions.create('opacity'),
             zIndex: 5,
         },
-        item: {
-            padding: theme.spacing(1),
+        paddingY: {
+            paddingTop: theme.spacing(2),
+            paddingBottom: theme.spacing(2),
         },
     }),
 );
@@ -63,12 +65,6 @@ const StorePage: NextPage = (): JSX.Element | null => {
     );
     const { dataStore, dataGroups } = data || {};
 
-    const selectProduct = useState<IProduct | undefined>();
-    const addProduct = useState<IProductGroup | undefined>();
-    const updateProduct = useState<IProduct | undefined>();
-    const addGroup = useState<boolean>(false);
-    const delGroup = useState<IProductGroup | undefined>();
-
     if (!isAdminOrStoreAdmin) {
         router.push({ pathname: '/stores/[id]', query: { id: id } });
         return null;
@@ -76,15 +72,7 @@ const StorePage: NextPage = (): JSX.Element | null => {
 
     return (
         <Layout title="Restaurant ID" disablePadding>
-            <DialogDataContext.Provider
-                value={{
-                    selectProduct,
-                    addProduct,
-                    updateProduct,
-                    addGroup,
-                    delGroup,
-                }}
-            >
+            <DialogDataProvider>
                 <Grid container justify="center">
                     <Grid item container justify="center" xs={12} lg={12}>
                         <Grid
@@ -122,6 +110,9 @@ const StorePage: NextPage = (): JSX.Element | null => {
                                 </Typography>
                             </Grid>
                         </Grid>
+                        <Grid item xs={12} lg={9} className={classes.paddingY}>
+                            <AddGroupButton />
+                        </Grid>
                         <Grid item xs={12} lg={9}>
                             {dataGroups
                                 ?.sort((a, b) => a.index - b.index)
@@ -137,7 +128,7 @@ const StorePage: NextPage = (): JSX.Element | null => {
                 <ProductGroupDelDialog />
                 <ProductGroupAddDialog />
                 <ProductAddDialog />
-            </DialogDataContext.Provider>
+            </DialogDataProvider>
         </Layout>
     );
 };

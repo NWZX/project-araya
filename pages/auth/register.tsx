@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Layout from '../../components/Layout';
+import Layout from 'components/Layout';
 import {
     Grid,
     Typography,
@@ -23,14 +23,14 @@ import { useSnackbar } from 'notistack';
 
 import firebase from 'firebase/app';
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
-import { fetchPostJSON } from '../../utils/apiHelpers';
-import { IAddress, ICustomer } from '../../interfaces';
+import { fetchPostJSON } from 'utils/apiHelpers';
+import { IAddress, ICustomer } from 'interfaces';
 import validator from 'validator';
 import { ChangeEvent, useState } from 'react';
 import { NextPage } from 'next';
-import AddressForm from '../../components/auth/AddressForm';
-import AccountForm from '../../components/auth/AccountForm';
-import IdentityForm from '../../components/auth/IndentityForm';
+import AddressForm from 'components/auth/AddressForm';
+import AccountForm from 'components/auth/AccountForm';
+import IdentityForm from 'components/auth/IndentityForm';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

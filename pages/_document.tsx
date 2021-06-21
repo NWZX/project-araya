@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core/styles';
-import theme from '../utils/theme';
+import theme from 'utils/theme';
 import { Children } from 'react';
 
 export default class MyDocument extends Document {
@@ -25,7 +26,7 @@ export default class MyDocument extends Document {
                     <link rel="manifest" href="/manifest.json" />
                     <meta name="msapplication-TileColor" content="#ffffff" />
                     <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png" />
-                    <meta name="theme-color" content={theme.palette.primary.main} />
+                    <meta name="theme-color" content={(theme.palette?.primary as any).main} />
                     <link
                         rel="stylesheet"
                         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"

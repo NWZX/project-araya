@@ -1,4 +1,4 @@
-import Layout from '../../components/Layout';
+import Layout from 'components/Layout';
 
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
 
@@ -6,13 +6,13 @@ import { Grid, useTheme, BottomNavigation, BottomNavigationAction } from '@mater
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
 import { useAuthUser } from 'next-firebase-auth';
-import Budget from '../../components/account/Budget';
+import Budget from 'components/account/Budget';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
-import TotalOrders from '../../components/account/TotalOrders';
-import ListOrders from '../../components/account/ListOrders';
-import TotalProducts from '../../components/account/TotalProducts';
-import Inventory from '../../components/Icons/Inventory';
+import TotalOrders from 'components/account/TotalOrders';
+import ListOrders from 'components/account/ListOrders';
+import TotalProducts from 'components/account/TotalProducts';
+import Inventory from 'icons/Inventory';
 
 const AccountPage: NextPage = (): JSX.Element => {
     const router = useRouter();

@@ -17,7 +17,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import { formatCurrencyString } from 'use-shopping-cart';
-import { IOrderRecipe } from '../../interfaces';
+import { IOrderRecipe } from 'interfaces';
 
 interface Props {
     order?: {

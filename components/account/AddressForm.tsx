@@ -4,8 +4,8 @@ import firebase from 'firebase';
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { INominatimReverseResult } from '../../interfaces';
-import { fetchGetJSON } from '../../utils/apiHelpers';
+import { INominatimReverseResult } from 'interfaces';
+import { fetchGetJSON } from 'utils/apiHelpers';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface Props extends UseFormReturn<any> {

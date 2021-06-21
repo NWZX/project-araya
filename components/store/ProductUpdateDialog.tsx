@@ -15,15 +15,17 @@ import {
     InputAdornment,
     Hidden,
     IconButton,
+    colors,
 } from '@material-ui/core';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EuroIcon from '@material-ui/icons/Euro';
 import DeleteIcon from '@material-ui/icons/Delete';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Map } from 'immutable';
-import { DialogDataContext, IProduct, IProductOption, IProductOptionGroup } from '../interfaces';
-import { UniqueIdGenerator } from '../utils/UIDG';
+import { IProduct, IProductOption, IProductOptionGroup } from 'interfaces';
+import { useDialogData } from 'interfaces/DialogDataContext';
+import { UniqueIdGenerator } from 'utils/UIDG';
 
 import firebase from 'firebase';
 
@@ -79,7 +81,7 @@ const ArrayToMap = (
 
 const ProductUpdateDialog = (): JSX.Element => {
     const classes = useStyles();
-    const dialogContext = useContext(DialogDataContext);
+    const dialogContext = useDialogData();
     const open = dialogContext.updateProduct?.[0];
     const setOpen = dialogContext.updateProduct?.[1];
     const {
@@ -139,6 +141,16 @@ const ProductUpdateDialog = (): JSX.Element => {
         setOptionData(optionData.clear());
         setOpen && setOpen(undefined);
     };
+    const handleDelete = async (): Promise<void> => {
+        try {
+            if (open?.id) {
+                await firebase.firestore().collection('products').doc(open.id).delete();
+                handleClose();
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
     const onSubmit = async (data: InputsForm): Promise<void> => {
         try {
             if (open && open.id) {
@@ -173,7 +185,7 @@ const ProductUpdateDialog = (): JSX.Element => {
                 handleClose();
             }
         } catch (error) {
-            console.log(error.message);
+            console.error(error.message);
         }
     };
 
@@ -183,7 +195,20 @@ const ProductUpdateDialog = (): JSX.Element => {
 
     return (
         <Dialog open={Boolean(open)} onClose={handleClose} maxWidth="md" fullWidth>
-            <DialogTitle id="form-dialog-title">Modification d&apos;un produit</DialogTitle>
+            <DialogTitle id="form-dialog-title">
+                <Grid container>
+                    <Grid item container xs={10} justify="flex-start" alignContent="center">
+                        <Grid item>Modifier un produit</Grid>
+                    </Grid>
+                    <Grid item container xs={2} justify="flex-end" alignContent="center">
+                        <Grid item>
+                            <IconButton style={{ color: colors.red[400] }} onClick={handleDelete}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent className={classes.DialogContent}>
                     <Grid container spacing={2}>
@@ -276,6 +301,7 @@ const ProductUpdateDialog = (): JSX.Element => {
                                         </Grid>
                                         <Grid item>
                                             <IconButton
+                                                style={{ color: colors.red[400] }}
                                                 onClick={() => {
                                                     optionData.deleteAll(
                                                         optionData.filter(({ key }) => key == k).keys(),

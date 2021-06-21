@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
-import Layout from '../../components/Layout';
+import Layout from 'components/Layout';
 import {
     Grid,
     TextField,
@@ -24,8 +24,8 @@ import MyLocationIcon from '@material-ui/icons/MyLocation';
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import { useState } from 'react';
 import firebase from 'firebase';
-import { fetchGetJSON, fetchPostJSON } from '../../utils/apiHelpers';
-import { EServiceType, IAddress, IAddressGeo, INominatimReverseResult } from '../../interfaces';
+import { fetchGetJSON, fetchPostJSON } from 'utils/apiHelpers';
+import { EServiceType, IAddress, IAddressGeo, INominatimReverseResult } from 'interfaces';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

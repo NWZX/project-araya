@@ -1,6 +1,6 @@
 import { getFirebaseAdmin } from './db';
 import Stripe from 'stripe';
-import { IProduct } from '../interfaces';
+import { IProduct } from 'interfaces';
 import { CartDetails } from 'use-shopping-cart';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {

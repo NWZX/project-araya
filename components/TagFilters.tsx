@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Chip, createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
-import { ITag } from '../interfaces';
+import { ITag } from 'interfaces';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

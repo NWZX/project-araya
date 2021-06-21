@@ -16,7 +16,7 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart';
-import { EServiceType } from '../interfaces';
+import { EServiceType } from 'interfaces';
 
 interface Props {
     deliveryFee?: number;

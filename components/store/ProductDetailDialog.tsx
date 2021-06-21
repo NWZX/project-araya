@@ -15,15 +15,16 @@ import {
     RadioGroup,
     Grid,
 } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart';
 import { Map } from 'immutable';
-import { DialogDataContext, IProductOption } from '../interfaces';
+import { IProductOption } from 'interfaces';
+import { useDialogData } from 'interfaces/DialogDataContext';
 
 interface Props {}
 
 const ProductDetailDialog = ({}: Props): JSX.Element => {
-    const dialogContext = useContext(DialogDataContext);
+    const dialogContext = useDialogData();
     const product = dialogContext.selectProduct?.[0];
     const setProduct = dialogContext.selectProduct?.[1];
     const { addItem } = useShoppingCart();

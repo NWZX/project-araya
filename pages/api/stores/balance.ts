@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import getAuthUser from '../../../utils/getAuthUser';
-import { getFirebaseAdmin } from '../../../utils/db';
+import getAuthUser from 'utils/getAuthUser';
+import { getFirebaseAdmin } from 'utils/db';
 import Stripe from 'stripe';
-import { IStore } from '../../../interfaces';
+import { IStore } from 'interfaces';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
     typescript: true,

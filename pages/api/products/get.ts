@@ -1,6 +1,6 @@
 import { NextApiResponse, NextApiRequest } from 'next';
-import { IProduct } from '../../../interfaces';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { IProduct } from 'interfaces';
+import { getFirebaseAdmin } from 'utils/db';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     try {

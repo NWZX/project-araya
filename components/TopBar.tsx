@@ -88,7 +88,7 @@ const TopBar = ({ disablePadding }: Props): JSX.Element => {
                                         }
                                         label={
                                             <Typography variant="body2" color="textPrimary">
-                                                Modifier le magasin
+                                                Modifier
                                             </Typography>
                                         }
                                     />

@@ -1,11 +1,12 @@
 import { Grid, IconButton, List, ListItem, ListSubheader } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import React, { useContext } from 'react';
+import React from 'react';
 import ProductButton from './ProductButton';
 
-import { DialogDataContext, IProduct, IProductGroup } from '../interfaces';
+import { IProduct, IProductGroup } from 'interfaces';
+import { useDialogData } from 'interfaces/DialogDataContext';
 import useSWR from 'swr';
-import { fetchGetJSON } from '../utils/apiHelpers';
+import { fetchGetJSON } from 'utils/apiHelpers';
 
 interface Props {
     className?: string;
@@ -13,11 +14,10 @@ interface Props {
     edit?: boolean;
 }
 
-const ProductList = ({ group, edit }: Props): JSX.Element => {
-    const dialogContext = useContext(DialogDataContext);
+const ProductList = ({ group, edit }: Props): JSX.Element | JSX.Element[] => {
+    const dialogContext = useDialogData();
     const setSelectProduct = dialogContext.selectProduct?.[1];
     const setUpdateProduct = dialogContext.updateProduct?.[1];
-    //const setAddGroup = dialogContext.addGroup?.[1];
     const setDelGroup = dialogContext.delGroup?.[1];
     const setAddProduct = dialogContext.addProduct?.[1];
 

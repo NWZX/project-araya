@@ -15,7 +15,6 @@ import {
     IsInt,
 } from 'class-validator';
 import firebase from 'firebase-admin';
-import { createContext, Dispatch, SetStateAction } from 'react';
 // You can include shared interfaces/types in a separate file
 // and then use them in any component by importing them. For
 // example, to import the interface below do:
@@ -374,17 +373,6 @@ export class ITag {
     title: string;
 }
 //#endregion
-
-//#region React Context
-export const DialogDataContext = createContext<{
-    selectProduct?: [IProduct | undefined, Dispatch<SetStateAction<IProduct | undefined>>];
-    addProduct?: [IProductGroup | undefined, Dispatch<SetStateAction<IProductGroup | undefined>>];
-    updateProduct?: [IProduct | undefined, Dispatch<SetStateAction<IProduct | undefined>>];
-    addGroup?: [boolean, Dispatch<SetStateAction<boolean>>];
-    delGroup?: [IProductGroup | undefined, Dispatch<SetStateAction<IProductGroup | undefined>>];
-}>({});
-//#endregion
-
 //#region Nominatim
 export class INominatimReverseResult {
     type: string;

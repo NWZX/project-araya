@@ -8,11 +8,11 @@
  */
 import Stripe from 'stripe';
 import { NextApiResponse, NextApiRequest } from 'next';
-import { getProductsByIds, validateCartItems } from '../../../utils/getProductsByIds';
-import { createOrder } from '../../../utils/createOrder';
-import { EServiceType, IAddressGeo, ICustomer, IStore } from '../../../interfaces';
-import getAuthUser from '../../../utils/getAuthUser';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { getProductsByIds, validateCartItems } from 'utils/getProductsByIds';
+import { createOrder } from 'utils/createOrder';
+import { EServiceType, IAddressGeo, ICustomer, IStore } from 'interfaces';
+import getAuthUser from 'utils/getAuthUser';
+import { getFirebaseAdmin } from 'utils/db';
 import { CartDetails } from 'use-shopping-cart';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -113,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const params: Stripe.Checkout.SessionCreateParams = {
             submit_type: 'pay',
             payment_method_types: ['card'],
-            customer: customer.private.stripeId,
+            customer: customer.private?.stripeId,
             client_reference_id: user.id,
             mode: 'payment',
             payment_intent_data: {
@@ -130,7 +130,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             cancel_url: `https://${origin}/order/finish`,
         };
         const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params, {
-            stripeAccount: store.private.stripeId,
+            stripeAccount: store.private?.stripeId,
         });
         res.status(200).json(checkoutSession);
     } catch (err) {

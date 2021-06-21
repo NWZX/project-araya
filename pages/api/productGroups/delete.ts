@@ -1,8 +1,8 @@
 import { NextApiResponse, NextApiRequest } from 'next';
-import { IProductGroup } from '../../../interfaces';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { IProductGroup } from 'interfaces';
+import { getFirebaseAdmin } from 'utils/db';
 import { validate } from 'class-validator';
-import getAuthUser from '../../../utils/getAuthUser';
+import getAuthUser from 'utils/getAuthUser';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     if (req.method !== 'POST') {

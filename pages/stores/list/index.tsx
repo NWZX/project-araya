@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import Layout from '../../../components/Layout';
+import Layout from 'components/Layout';
 
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
 import algoliasearch from 'algoliasearch/lite';
@@ -17,13 +17,13 @@ import {
 import Pagination from '@material-ui/lab/Pagination';
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 
-import Filters from '../../../components/Filters';
-import ShopCard from '../../../components/ShopCard';
-import { IStore, ITag } from '../../../interfaces';
+import Filters from 'components/Filters';
+import ShopCard from 'components/ShopCard';
+import { IStore, ITag } from 'interfaces';
 import firebase from 'firebase';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import { useEffect, useState } from 'react';
-import AlgoliaIcon from '../../../components/Icons/AlgoliaIcon';
+import AlgoliaIcon from 'icons/AlgoliaIcon';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 

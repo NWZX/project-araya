@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { NextApiResponse, NextApiRequest } from 'next';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { getFirebaseAdmin } from 'utils/db';
 import { buffer } from 'micro';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
     // https://github.com/stripe/stripe-node#configuration

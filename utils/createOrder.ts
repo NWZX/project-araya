@@ -1,5 +1,5 @@
 import { AuthUser } from 'next-firebase-auth';
-import { EServiceType, IAddressGeo, IOrder } from '../interfaces';
+import { EServiceType, IAddressGeo, IOrder } from 'interfaces';
 import { getFirebaseAdmin } from './db';
 import { validateCartItemsReturn } from './getProductsByIds';
 

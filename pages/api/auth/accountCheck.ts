@@ -1,9 +1,9 @@
 import { NextApiResponse, NextApiRequest } from 'next';
 import jwt from 'jsonwebtoken';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { getFirebaseAdmin } from 'utils/db';
 
 import Stripe from 'stripe';
-import { ICustomer } from '../../../interfaces';
+import { ICustomer } from 'interfaces';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
     // https://github.com/stripe/stripe-node#configuration
     apiVersion: '2020-08-27',

@@ -1,9 +1,9 @@
 import { NextApiResponse, NextApiRequest } from 'next';
-import { ICustomer, IStore } from '../../../interfaces';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { ICustomer, IStore } from 'interfaces';
+import { getFirebaseAdmin } from 'utils/db';
 import { validate } from 'class-validator';
-import getAlgolia from '../../../utils/getAlgolia';
-import getAuthUser from '../../../utils/getAuthUser';
+import getAlgolia from 'utils/getAlgolia';
+import getAuthUser from 'utils/getAuthUser';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     if (req.method !== 'POST') {

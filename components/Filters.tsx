@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
-import { ITag } from '../interfaces';
+import { ITag } from 'interfaces';
 import TagFilters from './TagFilters';
 
 const marks = [

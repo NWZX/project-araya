@@ -1,20 +1,21 @@
 import Link from 'next/link';
-import Layout from '../../../components/Layout';
+import Layout from 'components/Layout';
 import { Grid, makeStyles, createStyles, Theme, Typography } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { useShoppingCart } from 'use-shopping-cart';
 
-import { DialogDataContext, IProduct, IProductGroup, IStore } from '../../../interfaces';
-import { useEffect, useState } from 'react';
+import { IProductGroup, IStore } from 'interfaces';
+import { DialogDataProvider } from 'interfaces/DialogDataContext';
+import { useEffect } from 'react';
 import { Rating } from '@material-ui/lab';
-import PayementRecipe from '../../../components/PayementRecipe';
-import ProductDetailDialog from '../../../components/ProductDetailDialog';
+import PayementRecipe from 'components/PayementRecipe';
+import ProductDetailDialog from 'components/store/ProductDetailDialog';
 import { useRouter } from 'next/router';
 import { AuthAction, withAuthUser } from 'next-firebase-auth';
-import ProductList from '../../../components/ProductList';
+import ProductList from 'components/store/ProductList';
 import { NextPage } from 'next';
 import useSWR from 'swr';
-import { fetchGetJSON } from '../../../utils/apiHelpers';
+import { fetchGetJSON } from 'utils/apiHelpers';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -66,15 +67,7 @@ const StorePage: NextPage = (): JSX.Element => {
 
     return (
         <Layout title={dataStore?.title} disablePadding>
-            <DialogDataContext.Provider
-                value={{
-                    selectProduct: useState<IProduct | undefined>(),
-                    addProduct: useState<IProductGroup | undefined>(),
-                    updateProduct: useState<IProduct | undefined>(),
-                    addGroup: useState<boolean>(false),
-                    delGroup: useState<IProductGroup | undefined>(),
-                }}
-            >
+            <DialogDataProvider>
                 <Grid container justify="center">
                     <Grid item container justify="center" xs={12} lg={12}>
                         <Grid
@@ -132,7 +125,7 @@ const StorePage: NextPage = (): JSX.Element => {
                     </Grid>
                 </Grid>
                 <ProductDetailDialog />
-            </DialogDataContext.Provider>
+            </DialogDataProvider>
         </Layout>
     );
 };

@@ -1,7 +1,7 @@
 import { NextApiResponse, NextApiRequest } from 'next';
 import jwt from 'jsonwebtoken';
-import { EUsersRank, ICustomer } from '../../../interfaces';
-import { getFirebaseAdmin } from '../../../utils/db';
+import { EUsersRank, ICustomer } from 'interfaces';
+import { getFirebaseAdmin } from 'utils/db';
 import { validate } from 'class-validator';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
