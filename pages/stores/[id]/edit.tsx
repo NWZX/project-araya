@@ -4,7 +4,7 @@ import { Grid, makeStyles, createStyles, Theme, Typography } from '@material-ui/
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 import { IProductGroup, IStore } from 'interfaces';
-import { DialogDataProvider } from 'interfaces/DialogDataContext';
+import { StoreDialogProvider } from 'interfaces/StoreDialogContext';
 import { Rating } from '@material-ui/lab';
 import ProductUpdateDialog from 'components/store/ProductUpdateDialog';
 import { useRouter } from 'next/router';
@@ -72,7 +72,7 @@ const StorePage: NextPage = (): JSX.Element | null => {
 
     return (
         <Layout title={dataStore?.title} disablePadding>
-            <DialogDataProvider>
+            <StoreDialogProvider>
                 <Grid container justify="center">
                     <Grid item container justify="center" xs={12} lg={12}>
                         <Grid
@@ -128,7 +128,7 @@ const StorePage: NextPage = (): JSX.Element | null => {
                 <ProductGroupDelDialog />
                 <ProductGroupAddDialog />
                 <ProductAddDialog />
-            </DialogDataProvider>
+            </StoreDialogProvider>
         </Layout>
     );
 };

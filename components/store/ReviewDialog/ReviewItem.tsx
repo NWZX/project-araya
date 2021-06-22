@@ -1,10 +1,10 @@
 import { Button } from '@material-ui/core';
 import { Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
-import { IReview } from 'interfaces';
+import { IStoreReview } from 'interfaces';
 import React from 'react';
 
-interface Props extends IReview {
+interface Props extends IStoreReview {
     isResponse?: boolean;
 }
 

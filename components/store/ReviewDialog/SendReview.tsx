@@ -5,7 +5,7 @@ import SendIcon from '@material-ui/icons/Send';
 import { useAuthUser } from 'next-firebase-auth';
 import firebase from 'firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { IReview } from 'interfaces';
+import { IStoreReview } from 'interfaces';
 import { useEffect } from 'react';
 
 const useStyles = makeStyles(() =>
@@ -24,7 +24,7 @@ const SendReview: React.FC<Props> = ({ storeId }) => {
     const classes = useStyles();
     const user = useAuthUser();
 
-    const [data] = useCollectionData<IReview>(
+    const [data] = useCollectionData<IStoreReview>(
         user.id && storeId
             ? firebase.firestore().collection('reviews').where('authId', '==', user.id).where('storeId', '==', storeId)
             : undefined,
@@ -72,7 +72,7 @@ const SendReview: React.FC<Props> = ({ storeId }) => {
                             comment,
                             rate,
                             createdAt: firebase.firestore.Timestamp.now().toMillis(),
-                        } as Partial<IReview>);
+                        } as Partial<IStoreReview>);
                 }
             }
             setSending(false);

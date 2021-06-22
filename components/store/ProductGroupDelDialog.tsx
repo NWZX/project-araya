@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { IProductGroup } from 'interfaces';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 import { fetchPostJSON } from 'utils/apiHelpers';
 
 interface Props {}

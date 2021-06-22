@@ -9,7 +9,7 @@ import {
     TextField,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 
 interface Props {}
 

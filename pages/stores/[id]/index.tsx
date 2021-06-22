@@ -9,7 +9,7 @@ import { Rating } from '@material-ui/lab';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 import { IProductGroup, IStore } from 'interfaces';
-import { DialogDataProvider } from 'interfaces/DialogDataContext';
+import { StoreDialogProvider } from 'interfaces/StoreDialogContext';
 import { fetchGetJSON } from 'utils/apiHelpers';
 
 import { useShoppingCart } from 'use-shopping-cart';
@@ -71,7 +71,7 @@ const StorePage: NextPage = (): JSX.Element => {
 
     return (
         <Layout title={dataStore?.title} disablePadding>
-            <DialogDataProvider>
+            <StoreDialogProvider>
                 <Grid container justify="center">
                     <Grid item container justify="center" xs={12} lg={12}>
                         <Grid
@@ -126,7 +126,7 @@ const StorePage: NextPage = (): JSX.Element => {
                 </Grid>
                 <ReviewDialog />
                 <ProductDetailDialog />
-            </DialogDataProvider>
+            </StoreDialogProvider>
         </Layout>
     );
 };

@@ -23,7 +23,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Map } from 'immutable';
 import { IProduct, IProductOption, IProductOptionGroup } from 'interfaces';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 import { UniqueIdGenerator } from 'utils/UIDG';
 
 import firebase from 'firebase';

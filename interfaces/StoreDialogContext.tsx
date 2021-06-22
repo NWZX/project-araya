@@ -4,14 +4,6 @@
 import { createContext, useContext, useReducer } from 'react';
 import { IProduct, IProductGroup } from '.';
 
-// interface IDialogData {
-//     selectProduct?: [IProduct | undefined, Dispatch<SetStateAction<IProduct | undefined>>];
-//     addProduct?: [IProductGroup | undefined, Dispatch<SetStateAction<IProductGroup | undefined>>];
-//     updateProduct?: [IProduct | undefined, Dispatch<SetStateAction<IProduct | undefined>>];
-//     addGroup?: [boolean, Dispatch<SetStateAction<boolean>>];
-//     delGroup?: [IProductGroup | undefined, Dispatch<SetStateAction<IProductGroup | undefined>>];
-//     review: [string | undefined, Dispatch<SetStateAction<string | undefined>>];
-// }
 interface IDialogData {
     selectedProduct?: IProduct;
     selectedGroup?: IProductGroup;
@@ -42,23 +34,23 @@ function reducer(state: IDialogData, action: { type: string; payload?: Record<st
     }
 }
 
-const DialogDataContext = createContext<[IDialogData, (type: string, payload?: Record<string, any>) => void]>([
+const StoreDialogContext = createContext<[IDialogData, (type: string, payload?: Record<string, any>) => void]>([
     initialState,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     () => {},
 ]);
-export const DialogDataProvider: React.FC = ({ children }) => {
+export const StoreDialogProvider: React.FC = ({ children }) => {
     const [data, dispatchData] = useReducer(reducer, initialState);
 
     return (
-        <DialogDataContext.Provider value={[data, (t, p) => dispatchData({ type: t, payload: p })]}>
+        <StoreDialogContext.Provider value={[data, (t, p) => dispatchData({ type: t, payload: p })]}>
             {children}
-        </DialogDataContext.Provider>
+        </StoreDialogContext.Provider>
     );
 };
 
 export const useDialogData = () => {
-    const [context, dispatch] = useContext(DialogDataContext);
+    const [context, dispatch] = useContext(StoreDialogContext);
     const openDialog = (target: string): void => {
         dispatch('open-target-dialog', { currentDialog: target });
     };

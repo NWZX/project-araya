@@ -3,8 +3,8 @@ import { Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton } from '@
 import CloseIcon from '@material-ui/icons/Close';
 import ReviewItem from './ReviewItem';
 import SendReview from './SendReview';
-import { IReview } from 'interfaces';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { IStoreReview } from 'interfaces';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 
 import firebase from 'firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -13,7 +13,7 @@ interface Props {}
 
 const ReviewDialog: React.FC<Props> = () => {
     const { currentDialog, storeId, closeDialog } = useDialogData();
-    const [data] = useCollectionData<IReview>(
+    const [data] = useCollectionData<IStoreReview>(
         storeId ? firebase.firestore().collection('reviews').where('storeId', '==', storeId) : undefined,
         {
             idField: 'id',

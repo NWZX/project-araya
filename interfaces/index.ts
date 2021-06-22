@@ -184,16 +184,6 @@ class IStorePrivate {
     @IsOptional()
     stripeId?: string;
 }
-export class IStoreReview {
-    storeId: string;
-    customer: {
-        id: string;
-        firstName: string;
-        lastName: string;
-    };
-    score: number;
-    review: string;
-}
 export class IOwner {
     @Length(2, 30)
     firstName: string;
@@ -204,7 +194,7 @@ export class IOwner {
     @ValidateNested()
     contact: IContact;
 }
-export class IReview {
+export class IStoreReview {
     @IsOptional()
     id?: string;
 
@@ -341,7 +331,7 @@ export class IOrder {
 }
 //#endregion
 //#region Deliveror
-export class IDeliveror {
+export class IDeliverer {
     @IsOptional()
     id?: string;
 
@@ -351,26 +341,31 @@ export class IDeliveror {
     @Length(2, 30)
     firstName: string;
 
+    storeIds: string[];
+
     isInService: boolean;
+    delivererCode: string;
 
     currentLocation: IGeoPoint;
 
-    private: IDeliverorPrivate;
+    private: IDelivererPrivate;
 
     createdAt: number;
     updatedAt?: number;
 }
-class IDeliverorPrivate {
+class IDelivererPrivate {
     @Length(2, 30)
     lastName: string;
 
     @ValidateNested()
     address: IAddress;
 
+    birthDate: number;
+
     @ValidateNested()
     contact: IContact;
 }
-export class IDeliverorReview {
+export class IDelivererReview {
     deliverorId: string;
     customer: {
         id: string;

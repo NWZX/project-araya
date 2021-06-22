@@ -4,7 +4,7 @@ import React from 'react';
 import ProductButton from './ProductButton';
 
 import { IProduct, IProductGroup } from 'interfaces';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 import useSWR from 'swr';
 import { fetchGetJSON } from 'utils/apiHelpers';
 

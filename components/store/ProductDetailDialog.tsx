@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart';
 import { Map } from 'immutable';
 import { IProductOption } from 'interfaces';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 
 interface Props {}
 
