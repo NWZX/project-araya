@@ -204,6 +204,28 @@ export class IOwner {
     @ValidateNested()
     contact: IContact;
 }
+export class IReview {
+    @IsOptional()
+    id?: string;
+
+    @IsOptional()
+    ref?: firebase.firestore.DocumentReference;
+
+    authId: string;
+    author: string;
+    storeId: string;
+
+    @Min(0)
+    @Max(5)
+    rate: number;
+
+    @IsOptional()
+    comment?: string;
+
+    createdAt: number;
+    @IsOptional()
+    updatedAt?: number;
+}
 //#endregion
 //#region Product
 export class IProductGroup {

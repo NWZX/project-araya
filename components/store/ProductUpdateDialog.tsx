@@ -81,9 +81,7 @@ const ArrayToMap = (
 
 const ProductUpdateDialog = (): JSX.Element => {
     const classes = useStyles();
-    const dialogContext = useDialogData();
-    const open = dialogContext.updateProduct?.[0];
-    const setOpen = dialogContext.updateProduct?.[1];
+    const { currentDialog, selectedProduct, closeDialog } = useDialogData();
     const {
         register,
         handleSubmit,
@@ -98,9 +96,13 @@ const ProductUpdateDialog = (): JSX.Element => {
     );
     const [optionData, setOptionData] = useState<Map<string, IOptionData>>(Map<string, IOptionData>());
     useEffect(() => {
-        if (open?.optionGroup) {
-            reset({ title: open?.title, description: open?.description, price: (open?.price || 0) / 100 });
-            const convert = ArrayToMap(open.optionGroup);
+        if (selectedProduct?.optionGroup) {
+            reset({
+                title: selectedProduct?.title,
+                description: selectedProduct?.description,
+                price: (selectedProduct?.price || 0) / 100,
+            });
+            const convert = ArrayToMap(selectedProduct.optionGroup);
             if (convert) {
                 setOptionGroupData(convert[0]);
                 setOptionData(convert[1]);
@@ -110,7 +112,7 @@ const ProductUpdateDialog = (): JSX.Element => {
             setOptionGroupData(Map<string, IOptionGroupData>());
             setOptionData(Map<string, IOptionData>());
         };
-    }, [open, reset]);
+    }, [selectedProduct, reset]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateGroupData = (key: string, e: any): void => {
         const old = optionGroupData?.get(key);
@@ -139,12 +141,12 @@ const ProductUpdateDialog = (): JSX.Element => {
         reset();
         setOptionGroupData(optionGroupData?.clear());
         setOptionData(optionData.clear());
-        setOpen && setOpen(undefined);
+        closeDialog();
     };
     const handleDelete = async (): Promise<void> => {
         try {
-            if (open?.id) {
-                await firebase.firestore().collection('products').doc(open.id).delete();
+            if (selectedProduct?.id) {
+                await firebase.firestore().collection('products').doc(selectedProduct.id).delete();
                 handleClose();
             }
         } catch (error) {
@@ -153,7 +155,7 @@ const ProductUpdateDialog = (): JSX.Element => {
     };
     const onSubmit = async (data: InputsForm): Promise<void> => {
         try {
-            if (open && open.id) {
+            if (selectedProduct) {
                 const optionGroup: IProductOptionGroup[] = [];
                 optionGroupData.forEach((v, k) => {
                     const o: IProductOption[] = [];
@@ -180,7 +182,7 @@ const ProductUpdateDialog = (): JSX.Element => {
                 };
                 await firebase
                     .firestore()
-                    .doc('products/' + open.id)
+                    .doc('products/' + selectedProduct.id)
                     .set(product, { merge: true });
                 handleClose();
             }
@@ -194,7 +196,7 @@ const ProductUpdateDialog = (): JSX.Element => {
     const { ref: priceRef, ...price } = register('price');
 
     return (
-        <Dialog open={Boolean(open)} onClose={handleClose} maxWidth="md" fullWidth>
+        <Dialog open={currentDialog == 'update-product'} onClose={handleClose} maxWidth="md" fullWidth>
             <DialogTitle id="form-dialog-title">
                 <Grid container>
                     <Grid item container xs={10} justify="flex-start" alignContent="center">

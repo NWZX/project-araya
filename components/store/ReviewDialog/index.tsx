@@ -1,22 +1,32 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogTitle, Grid, IconButton } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ReviewItem from './ReviewItem';
 import SendReview from './SendReview';
+import { IReview } from 'interfaces';
 import { useDialogData } from 'interfaces/DialogDataContext';
+
+import firebase from 'firebase';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 interface Props {}
 
 const ReviewDialog: React.FC<Props> = () => {
-    const dialogContext = useDialogData().review;
-    const setReview = dialogContext?.[1];
+    const { currentDialog, storeId, closeDialog } = useDialogData();
+    const [data] = useCollectionData<IReview>(
+        storeId ? firebase.firestore().collection('reviews').where('storeId', '==', storeId) : undefined,
+        {
+            idField: 'id',
+            refField: 'ref',
+        },
+    );
 
     const handleClose = (): void => {
-        setReview && setReview(undefined);
+        closeDialog();
     };
 
     return (
-        <Dialog open={Boolean(dialogContext?.[0])} onClose={handleClose} fullScreen>
+        <Dialog open={currentDialog == 'review'} onClose={handleClose} fullScreen>
             <DialogTitle id="form-dialog-title">
                 <Grid container>
                     <Grid item container xs={10} justify="flex-start" alignContent="center">
@@ -33,25 +43,18 @@ const ReviewDialog: React.FC<Props> = () => {
             </DialogTitle>
             <DialogContent>
                 <Grid container>
-                    <Grid item container justify="flex-end" spacing={2} style={{ height: '60vh', overflowY: 'scroll' }}>
-                        <Grid item xs={12}>
-                            <ReviewItem />
-                        </Grid>
-                        <Grid item xs={11}>
-                            <ReviewItem isResponse />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ReviewItem />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ReviewItem />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ReviewItem />
-                        </Grid>
+                    <Grid item xs={12} style={{ marginBottom: '1rem' }}>
+                        <SendReview storeId={storeId} />
                     </Grid>
-                    <Grid item xs={12} style={{ marginTop: '2rem' }}>
-                        <SendReview />
+                    <Grid item xs={12} style={{ marginBottom: '1rem' }}>
+                        <Divider variant="fullWidth" />
+                    </Grid>
+                    <Grid item container justify="flex-end" spacing={2} style={{ maxHeight: '60%', overflowY: 'auto' }}>
+                        {data?.map((v) => (
+                            <Grid item xs={12} key={v.id}>
+                                <ReviewItem {...v} />
+                            </Grid>
+                        ))}
                     </Grid>
                 </Grid>
             </DialogContent>

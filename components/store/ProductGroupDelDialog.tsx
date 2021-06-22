@@ -7,18 +7,16 @@ import { fetchPostJSON } from 'utils/apiHelpers';
 interface Props {}
 
 const ProductGroupDelDialog = ({}: Props): JSX.Element => {
-    const dialogContext = useDialogData();
-    const group = dialogContext.delGroup?.[0];
-    const setGroup = dialogContext.delGroup?.[1];
+    const { currentDialog, selectedGroup, closeDialog } = useDialogData();
 
     const handleClose = (): void => {
-        setGroup && setGroup(undefined);
+        closeDialog();
     };
     const onSubmit = async (): Promise<void> => {
-        if (group) {
+        if (selectedGroup) {
             const result = await fetchPostJSON<{ group: IProductGroup }, { result: boolean }>(
                 '/api/productGroups/delete',
-                { group },
+                { group: selectedGroup },
             );
             result && handleClose();
         }
@@ -26,8 +24,10 @@ const ProductGroupDelDialog = ({}: Props): JSX.Element => {
 
     return (
         <form>
-            <Dialog open={Boolean(group)} onClose={handleClose}>
-                <DialogTitle id="form-dialog-title">Suppresion du groupe &quot;{group?.title}&quot;</DialogTitle>
+            <Dialog open={currentDialog == 'del-product-group'} onClose={handleClose}>
+                <DialogTitle id="form-dialog-title">
+                    Suppresion du groupe &quot;{selectedGroup?.title}&quot;
+                </DialogTitle>
                 <DialogContent>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>

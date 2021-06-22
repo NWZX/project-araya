@@ -15,11 +15,7 @@ interface Props {
 }
 
 const ProductList = ({ group, edit }: Props): JSX.Element | JSX.Element[] => {
-    const dialogContext = useDialogData();
-    const setSelectProduct = dialogContext.selectProduct?.[1];
-    const setUpdateProduct = dialogContext.updateProduct?.[1];
-    const setDelGroup = dialogContext.delGroup?.[1];
-    const setAddProduct = dialogContext.addProduct?.[1];
+    const { openDialog, setProduct, setGroup } = useDialogData();
 
     const { data } = useSWR<IProduct[]>(group.id ? `/api/products/get?pgid=${group.id}` : null, fetchGetJSON);
 
@@ -35,7 +31,8 @@ const ProductList = ({ group, edit }: Props): JSX.Element | JSX.Element[] => {
                             <Grid item container xs={6} justify="flex-end">
                                 <IconButton
                                     onClick={() => {
-                                        setDelGroup && setDelGroup(group);
+                                        setGroup(group);
+                                        openDialog('del-product-group');
                                     }}
                                 >
                                     <DeleteIcon />
@@ -55,9 +52,8 @@ const ProductList = ({ group, edit }: Props): JSX.Element | JSX.Element[] => {
                                 price={v.price}
                                 imageUrl="/ressource/prod1.jpg"
                                 onClick={() => {
-                                    edit
-                                        ? setUpdateProduct && setUpdateProduct(v)
-                                        : setSelectProduct && setSelectProduct(v);
+                                    setProduct(v);
+                                    edit ? openDialog('update-product') : openDialog('detail-product');
                                 }}
                             />
                         </Grid>
@@ -67,8 +63,8 @@ const ProductList = ({ group, edit }: Props): JSX.Element | JSX.Element[] => {
                             <ProductButton
                                 title="Ajouter un produit"
                                 onClick={() => {
-                                    //setAddGroup && setAddGroup(true);
-                                    setAddProduct && setAddProduct(group);
+                                    setGroup(group);
+                                    openDialog('add-product');
                                 }}
                             />
                         </Grid>

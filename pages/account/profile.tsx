@@ -114,6 +114,21 @@ const ProfilePage: NextPage = (): JSX.Element => {
                     } as Partial<ICustomer>,
                     { merge: true },
                 );
+
+                //SHOULD BE DONE ON SERVER SIDE
+                if (customer?.id) {
+                    const reviews = await firebase
+                        .firestore()
+                        .collection('reviews')
+                        .where('authId', '==', customer.id)
+                        .get();
+                    reviews.forEach((review) =>
+                        review.ref.set(
+                            { author: `${getValues('firstName')} ${getValues('lastName')}` },
+                            { merge: true },
+                        ),
+                    );
+                }
             }
             enqueueSnackbar('Modifier', { variant: 'success' });
         } catch (error) {

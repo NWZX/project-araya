@@ -5,15 +5,14 @@ import { useDialogData } from 'interfaces/DialogDataContext';
 interface Props {}
 
 const AddGroupButton: React.FC<Props> = () => {
-    const dialogContext = useDialogData();
-    const setAddGroup = dialogContext.addGroup?.[1];
+    const { openDialog } = useDialogData();
     return (
         <Button
             variant="outlined"
             size="large"
             fullWidth
             onClick={() => {
-                setAddGroup && setAddGroup(true);
+                openDialog('add-product-group');
             }}
         >
             Ajouter un groupe

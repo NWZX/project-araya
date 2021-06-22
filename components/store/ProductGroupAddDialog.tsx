@@ -14,13 +14,11 @@ import { useDialogData } from 'interfaces/DialogDataContext';
 interface Props {}
 
 const ProductGroupAddDialog = ({}: Props): JSX.Element => {
-    const dialogContext = useDialogData();
-    const open = dialogContext.addGroup?.[0];
-    const setOpen = dialogContext.addGroup?.[1];
+    const { currentDialog, closeDialog } = useDialogData();
     const [title, setTitle] = useState('');
 
     const handleClose = (): void => {
-        setOpen && setOpen(false);
+        closeDialog();
     };
     // const onSubmit = (): void => {
     //     handleClose();
@@ -28,7 +26,7 @@ const ProductGroupAddDialog = ({}: Props): JSX.Element => {
 
     return (
         <form>
-            <Dialog open={Boolean(open)} onClose={handleClose}>
+            <Dialog open={currentDialog == 'add-product-group'} onClose={handleClose}>
                 <DialogTitle id="form-dialog-title">Crée un groupe</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={1}>

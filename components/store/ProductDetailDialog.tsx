@@ -24,9 +24,7 @@ import { useDialogData } from 'interfaces/DialogDataContext';
 interface Props {}
 
 const ProductDetailDialog = ({}: Props): JSX.Element => {
-    const dialogContext = useDialogData();
-    const product = dialogContext.selectProduct?.[0];
-    const setProduct = dialogContext.selectProduct?.[1];
+    const { currentDialog, selectedProduct, closeDialog } = useDialogData();
     const { addItem } = useShoppingCart();
     const [optionState, setOptionState] = useState<Map<string, [boolean, IProductOption]>>(
         Map<string, [boolean, IProductOption]>(),
@@ -37,7 +35,7 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
 
     const onSubmit = (): void => {
         //TRASH CODE NEED REVIEW
-        if (product && product.id) {
+        if (selectedProduct) {
             let optionString = '';
             const optionNames: string[] = [];
             let optionPrice = 0;
@@ -61,11 +59,11 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
             });
 
             addItem({
-                id: product.id + optionString,
-                name: product.title,
+                id: selectedProduct.id + optionString,
+                name: selectedProduct.title,
                 currency: 'eur',
-                price: product.price + optionPrice,
-                description: product.description,
+                price: selectedProduct.price + optionPrice,
+                description: selectedProduct.description,
                 image: undefined,
                 option: option,
                 optionNames: optionNames,
@@ -76,20 +74,20 @@ const ProductDetailDialog = ({}: Props): JSX.Element => {
 
     const handleClose = (): void => {
         setOptionState(optionState.clear());
-        setProduct && setProduct(undefined);
+        closeDialog();
     };
 
     return (
-        <Dialog open={Boolean(product)} onClose={handleClose}>
-            <DialogTitle id="form-dialog-title">{product?.title}</DialogTitle>
+        <Dialog open={currentDialog == 'detail-product'} onClose={handleClose}>
+            <DialogTitle id="form-dialog-title">{selectedProduct?.title}</DialogTitle>
             <DialogContent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
-                        <DialogContentText>{product?.description}</DialogContentText>
-                        {product?.optionGroup && <Divider variant="middle" />}
+                        <DialogContentText>{selectedProduct?.description}</DialogContentText>
+                        {selectedProduct?.optionGroup && <Divider variant="middle" />}
                     </Grid>
                     <Grid item xs={12}>
-                        {product?.optionGroup.map((v, i) => (
+                        {selectedProduct?.optionGroup.map((v, i) => (
                             <FormControl key={v.id} component="fieldset">
                                 <FormLabel component="legend">{v.title}</FormLabel>
                                 {v.type &&

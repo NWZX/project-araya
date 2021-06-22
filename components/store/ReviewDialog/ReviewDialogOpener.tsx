@@ -7,12 +7,14 @@ interface Props {
 }
 
 const ReviewDialogOpener: React.FC<Props> = ({ id }) => {
-    const dialogContext = useDialogData().review;
-    const setReview = dialogContext?.[1];
+    const { openDialog, setStore } = useDialogData();
     return (
         <Link
             onClick={() => {
-                setReview && setReview(id);
+                if (id) {
+                    setStore(id);
+                    openDialog('review');
+                }
             }}
         >
             Voir les avis

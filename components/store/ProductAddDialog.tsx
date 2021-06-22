@@ -48,9 +48,7 @@ interface IOptionData {
 
 const ProductAddDialog = (): JSX.Element => {
     const classes = useStyles();
-    const dialogContext = useDialogData();
-    const open = dialogContext.addProduct?.[0];
-    const setOpen = dialogContext.addProduct?.[1];
+    const { currentDialog, selectedGroup, closeDialog } = useDialogData();
     const {
         register,
         handleSubmit,
@@ -90,11 +88,11 @@ const ProductAddDialog = (): JSX.Element => {
         reset();
         setOptionGroupData(optionGroupData?.clear());
         setOptionData(optionData.clear());
-        setOpen && setOpen(undefined);
+        closeDialog();
     };
     const onSubmit = async (data: InputsForm): Promise<void> => {
         try {
-            if (open && open.id) {
+            if (selectedGroup) {
                 const optionGroup: IProductOptionGroup[] = [];
                 optionGroupData.forEach((v, k) => {
                     const o: IProductOption[] = [];
@@ -113,11 +111,11 @@ const ProductAddDialog = (): JSX.Element => {
 
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
-                const product: IProduct = {
+                const product: Partial<IProduct> = {
                     title: data.title,
                     description: data.description,
                     price: data.price * 100,
-                    productGroupId: open.id,
+                    productGroupId: selectedGroup.id,
                     optionGroup,
                 };
                 await firebase.firestore().collection('products').add(product);
@@ -129,7 +127,7 @@ const ProductAddDialog = (): JSX.Element => {
     };
 
     return (
-        <Dialog open={Boolean(open)} onClose={handleClose} maxWidth="md" fullWidth>
+        <Dialog open={currentDialog == 'add-product'} onClose={handleClose} maxWidth="md" fullWidth>
             <DialogTitle id="form-dialog-title">Création d&apos;un produit</DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent>
