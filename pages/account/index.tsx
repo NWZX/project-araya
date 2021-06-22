@@ -11,6 +11,9 @@ import TotalOrders from 'components/account/TotalOrders';
 import ListOrders from 'components/account/ListOrders';
 import TotalProducts from 'components/account/TotalProducts';
 import TopTab from 'components/account/TopTab';
+import TotalDeliverer from 'components/account/TotalDeliverer';
+import { AccountDialogProvider } from 'interfaces/AccountDialogContext';
+import AddDelivererDialog from 'components/account/AddDelivererDialog';
 
 const AccountPage: NextPage = (): JSX.Element => {
     const router = useRouter();
@@ -21,26 +24,32 @@ const AccountPage: NextPage = (): JSX.Element => {
 
     return (
         <Layout title="Tableau de bord" disableHeader>
-            <TopTab selected={1} />
-            <Grid container spacing={3} style={{ padding: theme.spacing(3) }}>
-                {isAdminOrStoreAdmin && (
-                    <>
-                        <Grid item lg={3} sm={6} xl={3} xs={12}>
-                            <Budget />
-                        </Grid>
-                        <Grid item lg={3} sm={6} xl={3} xs={12}>
-                            <TotalProducts />
-                        </Grid>
-                    </>
-                )}
-                <Grid item lg={3} sm={6} xl={3} xs={12}>
-                    <TotalOrders />
-                </Grid>
+            <AccountDialogProvider>
+                <TopTab selected={1} />
+                <Grid container spacing={3} style={{ padding: theme.spacing(3) }}>
+                    {isAdminOrStoreAdmin && (
+                        <>
+                            <Grid item lg={3} sm={6} xl={3} xs={12}>
+                                <Budget />
+                            </Grid>
+                            <Grid item lg={3} sm={6} xl={3} xs={12}>
+                                <TotalProducts />
+                            </Grid>
+                        </>
+                    )}
+                    <Grid item lg={3} sm={6} xl={3} xs={12}>
+                        <TotalOrders />
+                    </Grid>
+                    <Grid item lg={3} sm={6} xl={3} xs={12}>
+                        <TotalDeliverer />
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <ListOrders />
+                    <Grid item xs={12}>
+                        <ListOrders />
+                    </Grid>
                 </Grid>
-            </Grid>
+                <AddDelivererDialog />
+            </AccountDialogProvider>
         </Layout>
     );
 };
