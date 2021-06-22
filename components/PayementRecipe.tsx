@@ -139,7 +139,7 @@ const PayementRecipe = ({ deliveryFee, serviceType }: Props): JSX.Element => {
                             })}
                         </Typography>
                     </ListItem>
-                    {deliveryFee && deliveryMode == EServiceType.Delivery && (
+                    {deliveryFee && (
                         <ListItem>
                             <Typography variant="h5" color="textPrimary" align="justify">
                                 Frais de livraison
@@ -148,7 +148,7 @@ const PayementRecipe = ({ deliveryFee, serviceType }: Props): JSX.Element => {
                                 {formatCurrencyString({
                                     currency: 'eur',
                                     language: 'fr',
-                                    value: deliveryFee,
+                                    value: deliveryMode == EServiceType.Delivery ? deliveryFee : 0,
                                 })}
                             </Typography>
                         </ListItem>
