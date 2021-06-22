@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '@material-ui/core';
-import { useDialogData } from 'interfaces/DialogDataContext';
+import { useDialogData } from 'interfaces/StoreDialogContext';
 
 interface Props {
     id?: string;
